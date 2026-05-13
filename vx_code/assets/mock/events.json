@@ -1,0 +1,38 @@
+[
+  {
+    "id": "e-001",
+    "title": "32nd Annual General Meeting",
+    "titleMs": "Mesyuarat Agung Tahunan ke-32",
+    "date": "2026-06-15",
+    "time": "09:00",
+    "venue": "KL Convention Centre",
+    "venueMs": "Pusat Konvensyen KL",
+    "tag": "AGM",
+    "tagColor": "violet",
+    "imageGradient": ["#4F46E5", "#1E1B4B"]
+  },
+  {
+    "id": "e-002",
+    "title": "Financial Literacy Weekend",
+    "titleMs": "Hujung Minggu Literasi Kewangan",
+    "date": "2026-06-22",
+    "time": "10:00",
+    "venue": "Koperasi VX HQ",
+    "venueMs": "Ibu Pejabat Koperasi VX",
+    "tag": "Workshop",
+    "tagColor": "amber",
+    "imageGradient": ["#F59E0B", "#B8730A"]
+  },
+  {
+    "id": "e-003",
+    "title": "Members' Iftar Gathering",
+    "titleMs": "Majlis Iftar Ahli",
+    "date": "2026-06-08",
+    "time": "18:30",
+    "venue": "Hotel Istana",
+    "venueMs": "Hotel Istana",
+    "tag": "Community",
+    "tagColor": "green",
+    "imageGradient": ["#10B981", "#065F46"]
+  }
+]

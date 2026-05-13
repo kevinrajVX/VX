@@ -1,37 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'core/localization/generated/app_localizations.dart';
+import 'core/localization/locale_provider.dart';
+import 'core/theme/app_theme.dart';
+import 'features/home/home_shell.dart';
 
 void main() {
-  runApp(const VXCodeApp());
+  runApp(const ProviderScope(child: VXCodeApp()));
 }
 
-class VXCodeApp extends StatelessWidget {
+class VXCodeApp extends ConsumerWidget {
   const VXCodeApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(localeProvider);
     return MaterialApp(
-      title: 'VX Code',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('VX Code'),
-      ),
-      body: const Center(
-        child: Text('Welcome to VX Code'),
-      ),
+      title: 'Koperasi VX',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light(),
+      locale: locale,
+      supportedLocales: const [Locale('en'), Locale('ms')],
+      localizationsDelegates: const [
+        AppL10n.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: const HomeShell(),
     );
   }
 }

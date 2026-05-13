@@ -1,0 +1,45 @@
+{
+  "@@locale": "en",
+  "appName": "Koperasi VX",
+  "tabHome": "Home",
+  "tabNews": "News",
+  "tabMarket": "Market",
+  "tabInbox": "Inbox",
+  "tabProfile": "Profile",
+  "welcomeBack": "Welcome Back",
+  "claimsInProgress": "{count, plural, =1{You have 1 enquiry in progress} other{You have {count} enquiries in progress}}",
+  "@claimsInProgress": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "totalShares": "Total Shares",
+  "viewStatement": "View Statement",
+  "asOf": "as of {date}",
+  "@asOf": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "services": "Services",
+  "servicePayDues": "Pay Dues",
+  "serviceStatements": "Statements",
+  "serviceTopUpShares": "Top-up Shares",
+  "serviceMarketplace": "Marketplace",
+  "serviceEnquiry": "Enquiry",
+  "serviceEvents": "Events",
+  "latestNews": "Latest News",
+  "seeAll": "See all",
+  "upcomingEvents": "Upcoming Events",
+  "minRead": "{min} min read",
+  "@minRead": {
+    "placeholders": { "min": { "type": "int" } }
+  },
+  "publishedOn": "Published on {date}",
+  "@publishedOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "share": "Share",
+  "bookmark": "Bookmark",
+  "languageToggle": "BM",
+  "memberId": "Member ID",
+  "yourMemberCard": "Your Member Card"
+}
