@@ -1,4 +1,4 @@
-package com.vxcode.vx_code
+package com.kevinraj.vxcode
 
 import io.flutter.embedding.android.FlutterActivity
 
