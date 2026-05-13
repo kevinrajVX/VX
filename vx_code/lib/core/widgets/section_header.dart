@@ -23,16 +23,22 @@ class SectionHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
+              letterSpacing: -0.4,
+            ),
           ),
         ),
         if (actionLabel != null && onAction != null)
           Pressable(
             onTap: onAction!,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 4,
-                horizontal: 4,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.tagVioletBg,
+                borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -40,15 +46,15 @@ class SectionHeader extends StatelessWidget {
                   Text(
                     actionLabel!,
                     style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.brandViolet,
                     ),
                   ),
-                  const SizedBox(width: 2),
+                  const SizedBox(width: 3),
                   const Icon(
                     Icons.arrow_forward_rounded,
-                    size: 14,
+                    size: 12,
                     color: AppColors.brandViolet,
                   ),
                 ],

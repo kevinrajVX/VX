@@ -6,11 +6,20 @@ class AppColors {
   static const Color brandIndigo = Color(0xFF1E1B4B);
   static const Color brandViolet = Color(0xFF4F46E5);
   static const Color brandViolet600 = Color(0xFF6366F1);
+  static const Color brandVioletLight = Color(0xFF818CF8);
 
   static const LinearGradient brandGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [brandIndigo, brandViolet],
+  );
+
+  // Richer 3-stop gradient for the hero card
+  static const LinearGradient heroGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 0.45, 1.0],
+    colors: [Color(0xFF0F0D2A), Color(0xFF2D2A7A), Color(0xFF4F46E5)],
   );
 
   static const LinearGradient brandGradientSoft = LinearGradient(
@@ -19,7 +28,51 @@ class AppColors {
     colors: [Color(0xFF312E81), Color(0xFF6366F1)],
   );
 
-  static const Color background = Color(0xFFF4F6FA);
+  // 6 unique service gradients — each tile has its own personality
+  static const List<LinearGradient> serviceGradients = [
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF6366F1), Color(0xFF4338CA)],
+    ),
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF0EA5E9), Color(0xFF0369A1)],
+    ),
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF10B981), Color(0xFF059669)],
+    ),
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+    ),
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFEC4899), Color(0xFFBE185D)],
+    ),
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
+    ),
+  ];
+
+  // Matching tinted card backgrounds (6% opacity of gradient start)
+  static const List<Color> serviceBgTints = [
+    Color(0x0D6366F1),
+    Color(0x0D0EA5E9),
+    Color(0x0D10B981),
+    Color(0x0DF59E0B),
+    Color(0x0DEC4899),
+    Color(0x0D8B5CF6),
+  ];
+
+  static const Color background = Color(0xFFF2F3FA);
   static const Color surface = Colors.white;
   static const Color surfaceMuted = Color(0xFFEDF0F7);
 
@@ -83,19 +136,48 @@ class AppShadows {
 
   static const List<BoxShadow> card = [
     BoxShadow(
-      color: Color(0x0F000000),
-      blurRadius: 16,
-      offset: Offset(0, 4),
-      spreadRadius: -2,
+      color: Color(0x12000000),
+      blurRadius: 20,
+      offset: Offset(0, 6),
+      spreadRadius: -4,
+    ),
+    BoxShadow(
+      color: Color(0x08000000),
+      blurRadius: 6,
+      offset: Offset(0, 2),
+      spreadRadius: -1,
     ),
   ];
 
+  // Deeply colored violet shadow for the hero card
   static const List<BoxShadow> hero = [
     BoxShadow(
-      color: Color(0x261E1B4B),
+      color: Color(0x554F46E5),
+      blurRadius: 64,
+      offset: Offset(0, 24),
+      spreadRadius: -12,
+    ),
+    BoxShadow(
+      color: Color(0x301E1B4B),
+      blurRadius: 24,
+      offset: Offset(0, 8),
+      spreadRadius: -4,
+    ),
+  ];
+
+  // Double shadow for premium card depth
+  static const List<BoxShadow> elevated = [
+    BoxShadow(
+      color: Color(0x1A000000),
       blurRadius: 32,
       offset: Offset(0, 12),
       spreadRadius: -8,
+    ),
+    BoxShadow(
+      color: Color(0x0A000000),
+      blurRadius: 8,
+      offset: Offset(0, 2),
+      spreadRadius: -2,
     ),
   ];
 }
@@ -110,4 +192,5 @@ class AppMotion {
   static const Curve emphasized = Cubic(0.2, 0, 0, 1);
   static const Curve standard = Curves.easeOutCubic;
   static const Curve spring = Cubic(0.34, 1.56, 0.64, 1);
+  static const Curve springOut = Cubic(0.22, 1.0, 0.36, 1.0);
 }

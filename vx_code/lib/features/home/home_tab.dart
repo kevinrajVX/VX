@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,112 +31,135 @@ class HomeTab extends ConsumerWidget {
     final l = AppL10n.of(context);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: RefreshIndicator(
-        color: AppColors.brandViolet,
-        onRefresh: () async {
-          ref.invalidate(memberProvider);
-          ref.invalidate(newsProvider);
-          ref.invalidate(eventsProvider);
-          await Future.delayed(const Duration(milliseconds: 600));
-        },
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
+      backgroundColor: Colors.transparent,
+      body: Container(
+        // Subtle gradient: barely violet-tinted at top, neutral below
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment(0, 0.6),
+            colors: [Color(0xFFEEEFF8), AppColors.background],
           ),
-          slivers: [
-            SliverToBoxAdapter(child: SafeArea(child: _TopBar())),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.screenPadding,
-                AppSpacing.sm,
-                AppSpacing.screenPadding,
-                AppSpacing.huge,
-              ),
-              sliver: SliverList.list(
-                children: [
-                  memberAsync.when(
-                    loading: () => const _HeroSkeleton(),
-                    error: (e, _) => _ErrorBox(message: '$e'),
-                    data: (m) => HeroCard(
-                      member: m,
-                      onViewStatement: () {},
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxxl),
-                  SectionHeader(title: l.services),
-                  const SizedBox(height: AppSpacing.lg),
-                  ServicesGrid(onServiceTap: (_) {}),
-                  const SizedBox(height: AppSpacing.xxxl),
-                  SectionHeader(
-                    title: l.latestNews,
-                    actionLabel: l.seeAll,
-                    onAction: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const NewsListPage(),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  newsAsync.when(
-                    loading: () => const _NewsRowSkeleton(),
-                    error: (e, _) => _ErrorBox(message: '$e'),
-                    data: (items) => SizedBox(
-                      height: 240,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        padding: EdgeInsets.zero,
-                        itemCount: items.length,
-                        separatorBuilder: (_, __) =>
-                            const SizedBox(width: AppSpacing.md),
-                        itemBuilder: (context, i) {
-                          return NewsCard(item: items[i])
-                              .animate()
-                              .fadeIn(
-                                delay: (50 * i).ms,
-                                duration: 280.ms,
-                              )
-                              .slideX(
-                                begin: 0.08,
-                                end: 0,
-                                delay: (50 * i).ms,
-                                duration: 320.ms,
-                                curve: AppMotion.emphasized,
-                              );
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxxl),
-                  SectionHeader(title: l.upcomingEvents),
-                  const SizedBox(height: AppSpacing.lg),
-                  eventsAsync.when(
-                    loading: () => const _EventsSkeleton(),
-                    error: (e, _) => _ErrorBox(message: '$e'),
-                    data: (items) => Column(
-                      children: [
-                        for (var i = 0; i < items.length; i++) ...[
-                          _EventRow(item: items[i])
-                              .animate()
-                              .fadeIn(delay: (60 * i).ms, duration: 280.ms)
-                              .slideY(
-                                begin: 0.1,
-                                end: 0,
-                                delay: (60 * i).ms,
-                                duration: 320.ms,
-                                curve: AppMotion.emphasized,
-                              ),
-                          if (i < items.length - 1)
-                            const SizedBox(height: AppSpacing.md),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+        ),
+        child: RefreshIndicator(
+          color: AppColors.brandViolet,
+          backgroundColor: AppColors.surface,
+          onRefresh: () async {
+            ref.invalidate(memberProvider);
+            ref.invalidate(newsProvider);
+            ref.invalidate(eventsProvider);
+            await Future.delayed(const Duration(milliseconds: 600));
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
-          ],
+            slivers: [
+              SliverToBoxAdapter(child: SafeArea(child: _TopBar())),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.screenPadding,
+                  AppSpacing.sm,
+                  AppSpacing.screenPadding,
+                  AppSpacing.huge,
+                ),
+                sliver: SliverList.list(
+                  children: [
+                    memberAsync.when(
+                      loading: () => const _HeroSkeleton(),
+                      error: (e, _) => _ErrorBox(message: '$e'),
+                      data: (m) => HeroCard(
+                        member: m,
+                        onViewStatement: () {},
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxxl),
+                    SectionHeader(title: l.services),
+                    const SizedBox(height: AppSpacing.lg),
+                    ServicesGrid(onServiceTap: (_) {}),
+                    const SizedBox(height: AppSpacing.xxxl),
+                    SectionHeader(
+                      title: l.latestNews,
+                      actionLabel: l.seeAll,
+                      onAction: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const NewsListPage(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    newsAsync.when(
+                      loading: () => const _NewsRowSkeleton(),
+                      error: (e, _) => _ErrorBox(message: '$e'),
+                      data: (items) => SizedBox(
+                        height: 256,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          itemCount: items.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: AppSpacing.md),
+                          itemBuilder: (context, i) {
+                            return NewsCard(item: items[i], height: 256)
+                                .animate()
+                                .fadeIn(
+                                  delay: (60 * i).ms,
+                                  duration: 300.ms,
+                                )
+                                .slideX(
+                                  begin: 0.1,
+                                  end: 0,
+                                  delay: (60 * i).ms,
+                                  duration: 360.ms,
+                                  curve: AppMotion.emphasized,
+                                )
+                                .scale(
+                                  begin: const Offset(0.92, 0.92),
+                                  delay: (60 * i).ms,
+                                  duration: 400.ms,
+                                  curve: AppMotion.springOut,
+                                );
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxxl),
+                    SectionHeader(title: l.upcomingEvents),
+                    const SizedBox(height: AppSpacing.lg),
+                    eventsAsync.when(
+                      loading: () => const _EventsSkeleton(),
+                      error: (e, _) => _ErrorBox(message: '$e'),
+                      data: (items) => Column(
+                        children: [
+                          for (var i = 0; i < items.length; i++) ...[
+                            _EventRow(item: items[i])
+                                .animate()
+                                .fadeIn(delay: (80 * i).ms, duration: 320.ms)
+                                .slideY(
+                                  begin: 0.12,
+                                  end: 0,
+                                  delay: (80 * i).ms,
+                                  duration: 380.ms,
+                                  curve: AppMotion.emphasized,
+                                )
+                                .scale(
+                                  begin: const Offset(0.96, 0.96),
+                                  delay: (80 * i).ms,
+                                  duration: 380.ms,
+                                  curve: AppMotion.springOut,
+                                ),
+                            if (i < items.length - 1)
+                              const SizedBox(height: AppSpacing.md),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -157,35 +182,48 @@ class _TopBar extends ConsumerWidget {
         children: [
           const KoperasiLogo(size: 40, showWordmark: true),
           const Spacer(),
+          // Language toggle — refined frosted pill
           Pressable(
             onTap: () => ref.read(localeProvider.notifier).toggle(),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(AppRadius.pill),
-                boxShadow: AppShadows.card,
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.language,
-                    size: 14,
-                    color: AppColors.textSecondary,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
                   ),
-                  const SizedBox(width: 6),
-                  Text(
-                    locale.languageCode == 'en' ? 'EN · ${l.languageToggle}' : 'BM · ${l.languageToggle}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                  decoration: BoxDecoration(
+                    color: AppColors.surface.withValues(alpha: 0.82),
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                    border: Border.all(
+                      color: AppColors.divider.withValues(alpha: 0.7),
+                      width: 0.8,
                     ),
+                    boxShadow: AppShadows.soft,
                   ),
-                ],
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.language,
+                        size: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        locale.languageCode == 'en'
+                            ? 'EN · ${l.languageToggle}'
+                            : 'BM · ${l.languageToggle}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -212,6 +250,7 @@ class _EventRow extends ConsumerWidget {
 
     return Pressable(
       onTap: () {},
+      pressedScale: 0.97,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
@@ -221,9 +260,10 @@ class _EventRow extends ConsumerWidget {
         ),
         child: Row(
           children: [
+            // Date block with gradient
             Container(
-              width: 64,
-              height: 64,
+              width: 58,
+              height: 58,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -231,6 +271,14 @@ class _EventRow extends ConsumerWidget {
                   colors: item.gradientColors,
                 ),
                 borderRadius: BorderRadius.circular(AppRadius.md),
+                boxShadow: [
+                  BoxShadow(
+                    color: item.gradientColors.first.withValues(alpha: 0.35),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                    spreadRadius: -2,
+                  ),
+                ],
               ),
               alignment: Alignment.center,
               child: Column(
@@ -249,10 +297,10 @@ class _EventRow extends ConsumerWidget {
                   Text(
                     month,
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
+                      color: Colors.white70,
+                      fontSize: 9,
                       fontWeight: FontWeight.w700,
-                      letterSpacing: 1,
+                      letterSpacing: 1.2,
                     ),
                   ),
                 ],
@@ -264,26 +312,27 @@ class _EventRow extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TagPill(label: item.tag, color: item.tagColor),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 5),
                   Text(
                     item.localizedTitle(locale),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
+                      letterSpacing: -0.2,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Row(
                     children: [
                       const Icon(
                         Icons.place_outlined,
-                        size: 12,
+                        size: 11,
                         color: AppColors.textSecondary,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 3),
                       Expanded(
                         child: Text(
                           '${item.localizedVenue(locale)} · ${item.time}',
@@ -300,9 +349,18 @@ class _EventRow extends ConsumerWidget {
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.textSecondary,
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+              ),
+              child: const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.textSecondary,
+                size: 18,
+              ),
             ),
           ],
         ),
@@ -316,9 +374,16 @@ class _HeroSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 320,
+      height: 340,
       decoration: BoxDecoration(
-        color: AppColors.shimmer,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.shimmer,
+            AppColors.shimmer.withValues(alpha: 0.7),
+          ],
+        ),
         borderRadius: BorderRadius.circular(AppRadius.card),
       ),
     );
@@ -330,7 +395,7 @@ class _NewsRowSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 220,
+      height: 256,
       child: Row(
         children: List.generate(
           2,
@@ -360,7 +425,7 @@ class _EventsSkeleton extends StatelessWidget {
         (_) => Padding(
           padding: const EdgeInsets.only(bottom: AppSpacing.md),
           child: Container(
-            height: 88,
+            height: 82,
             decoration: BoxDecoration(
               color: AppColors.shimmer,
               borderRadius: BorderRadius.circular(AppRadius.xl),

@@ -40,7 +40,7 @@ class NewsListPage extends ConsumerWidget {
             AppSpacing.huge,
           ),
           itemCount: items.length,
-          separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.lg),
+          separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.lg),
           itemBuilder: (context, i) {
             return NewsCard(item: items[i], width: double.infinity, height: 280)
                 .animate()

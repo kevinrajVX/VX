@@ -31,59 +31,78 @@ class ServicesGrid extends StatelessWidget {
         crossAxisCount: 3,
         mainAxisSpacing: AppSpacing.md,
         crossAxisSpacing: AppSpacing.md,
-        childAspectRatio: 0.95,
+        childAspectRatio: 0.88,
       ),
       itemBuilder: (context, i) {
         final s = services[i];
+        final gradient = AppColors.serviceGradients[i];
+        final bgTint = AppColors.serviceBgTints[i];
+
         return Pressable(
           onTap: () => onServiceTap(s.id),
-          pressedScale: 0.94,
+          pressedScale: 0.92,
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppRadius.lg),
+              borderRadius: BorderRadius.circular(AppRadius.xl),
               boxShadow: AppShadows.card,
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.lg,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    gradient: AppColors.brandGradient,
-                    borderRadius: BorderRadius.circular(AppRadius.md),
+            child: Container(
+              decoration: BoxDecoration(
+                color: bgTint,
+                borderRadius: BorderRadius.circular(AppRadius.xl),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.lg,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Icon container with gradient + glow shadow
+                  Container(
+                    width: 54,
+                    height: 54,
+                    decoration: BoxDecoration(
+                      gradient: gradient,
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
+                      boxShadow: [
+                        BoxShadow(
+                          color: (gradient.colors.first).withValues(alpha: 0.40),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                          spreadRadius: -2,
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(s.icon, size: 26, color: Colors.white),
                   ),
-                  child: Icon(s.icon, size: 20, color: Colors.white),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  s.label,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    height: 1.15,
-                    color: AppColors.textPrimary,
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    s.label,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         )
             .animate()
-            .fadeIn(delay: (60 * i).ms, duration: 280.ms)
-            .slideY(
-              begin: 0.18,
-              end: 0,
-              delay: (60 * i).ms,
-              duration: 320.ms,
-              curve: AppMotion.emphasized,
+            .fadeIn(delay: (70 * i).ms, duration: 300.ms)
+            .scale(
+              begin: const Offset(0.82, 0.82),
+              delay: (70 * i).ms,
+              duration: 480.ms,
+              curve: AppMotion.spring,
             );
       },
     );

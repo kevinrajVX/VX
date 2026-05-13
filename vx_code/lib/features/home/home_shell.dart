@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -67,73 +69,88 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       ),
       bottomNavigationBar: SafeArea(
         top: false,
-        child: Container(
-          decoration: const BoxDecoration(
-            color: AppColors.surface,
-            boxShadow: AppShadows.soft,
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm,
-            vertical: AppSpacing.sm,
-          ),
-          child: Row(
-            children: List.generate(tabs.length, (i) {
-              final selected = i == _index;
-              final tab = tabs[i];
-              return Expanded(
-                child: Pressable(
-                  onTap: () => setState(() => _index = i),
-                  pressedScale: 0.94,
-                  child: AnimatedContainer(
-                    duration: AppMotion.base,
-                    curve: AppMotion.emphasized,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AnimatedSwitcher(
-                          duration: AppMotion.fast,
-                          transitionBuilder: (child, anim) =>
-                              ScaleTransition(scale: anim, child: child),
-                          child: Icon(
-                            selected ? tab.icon : tab.iconOutline,
-                            key: ValueKey(selected),
-                            size: 24,
-                            color: selected
-                                ? AppColors.brandViolet
-                                : AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          tab.label,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: selected
-                                ? FontWeight.w700
-                                : FontWeight.w500,
-                            color: selected
-                                ? AppColors.brandViolet
-                                : AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        AnimatedContainer(
-                          duration: AppMotion.base,
-                          curve: AppMotion.emphasized,
-                          height: 3,
-                          width: selected ? 18 : 0,
-                          decoration: BoxDecoration(
-                            color: AppColors.brandViolet,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ],
-                    ),
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.88),
+                border: Border(
+                  top: BorderSide(
+                    color: AppColors.divider.withValues(alpha: 0.5),
+                    width: 0.5,
                   ),
                 ),
-              );
-            }),
+              ),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.sm,
+                AppSpacing.sm,
+                AppSpacing.sm,
+                AppSpacing.xs,
+              ),
+              child: Row(
+                children: List.generate(tabs.length, (i) {
+                  final selected = i == _index;
+                  final tab = tabs[i];
+                  return Expanded(
+                    child: Pressable(
+                      onTap: () => setState(() => _index = i),
+                      pressedScale: 0.90,
+                      child: AnimatedContainer(
+                        duration: AppMotion.base,
+                        curve: AppMotion.emphasized,
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.sm,
+                          horizontal: AppSpacing.xs,
+                        ),
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? AppColors.brandViolet.withValues(alpha: 0.10)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedSwitcher(
+                              duration: AppMotion.fast,
+                              transitionBuilder: (child, anim) => ScaleTransition(
+                                scale: Tween<double>(begin: 0.75, end: 1.0).animate(
+                                  CurvedAnimation(parent: anim, curve: AppMotion.spring),
+                                ),
+                                child: child,
+                              ),
+                              child: Icon(
+                                selected ? tab.icon : tab.iconOutline,
+                                key: ValueKey(selected),
+                                size: 24,
+                                color: selected
+                                    ? AppColors.brandViolet
+                                    : AppColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            AnimatedDefaultTextStyle(
+                              duration: AppMotion.fast,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                                color: selected
+                                    ? AppColors.brandViolet
+                                    : AppColors.textSecondary,
+                                fontFamily: 'PlusJakartaSans',
+                              ),
+                              child: Text(tab.label),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
           ),
         ),
       ),
