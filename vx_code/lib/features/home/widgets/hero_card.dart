@@ -46,6 +46,7 @@ class HeroCard extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage('assets/images/hero_bg.jpg'),
             fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
           ),
         ),
         child: Stack(
