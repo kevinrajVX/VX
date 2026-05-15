@@ -8,6 +8,10 @@ import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/soft_icon_button.dart';
 import '../widgets/news_card.dart';
 
+/// Full news list screen.
+///
+/// Shows a scrollable [ListView] of [NewsCard] widgets in full-width / 260px
+/// height mode, each with a staggered fade + slide entrance animation.
 class NewsListPage extends ConsumerWidget {
   const NewsListPage({super.key});
 
@@ -31,7 +35,22 @@ class NewsListPage extends ConsumerWidget {
       ),
       body: newsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            child: Container(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: AppColors.tagAmberBg,
+                borderRadius: BorderRadius.circular(AppRadius.lg),
+              ),
+              child: Text(
+                '$e',
+                style: const TextStyle(color: AppColors.tagAmberText),
+              ),
+            ),
+          ),
+        ),
         data: (items) => ListView.separated(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.screenPadding,
@@ -42,7 +61,7 @@ class NewsListPage extends ConsumerWidget {
           itemCount: items.length,
           separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.lg),
           itemBuilder: (context, i) {
-            return NewsCard(item: items[i], width: double.infinity, height: 280)
+            return NewsCard(item: items[i], width: double.infinity, height: 260)
                 .animate()
                 .fadeIn(delay: (60 * i).ms, duration: 320.ms)
                 .slideY(

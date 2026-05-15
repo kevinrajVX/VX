@@ -10,11 +10,10 @@ abstract final class AppColors {
   static const LinearGradient brandGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [brandIndigo, brandViolet],
+    colors: [Color(0xFF4338CA), Color(0xFF4F46E5)],
   );
 
-  // ── Hero gradient ──────────────────────────────────────────────────────────
-  /// Bright blue (top-right) → mid-blue → silver-blue → near-white (bottom-left)
+  // ── Hero gradient: bright blue (top-right) → mid-blue → silver-blue → near-white (bottom-left) ──
   static const LinearGradient heroGradient = LinearGradient(
     begin: Alignment.topRight,
     end: Alignment.bottomLeft,
@@ -41,9 +40,6 @@ abstract final class AppColors {
 
   // ── Structural ────────────────────────────────────────────────────────────
   static const Color divider = Color(0xFFE5E7EB);
-
-  // ── Service chip background ───────────────────────────────────────────────
-  static const Color chipBg = Color(0xFFF3F4F6);
 
   // ── Tag palette ───────────────────────────────────────────────────────────
   static const Color tagGreenBg = Color(0xFFD1FAE5);
@@ -81,6 +77,7 @@ abstract final class AppSpacing {
 }
 
 abstract final class AppShadows {
+  /// Subtle 2-layer card shadow.
   static List<BoxShadow> get card => [
         BoxShadow(
           color: Colors.black.withValues(alpha: 0.05),
@@ -95,6 +92,7 @@ abstract final class AppShadows {
         ),
       ];
 
+  /// Blue-tinted hero shadow (blurRadius 48, offset 0,16).
   static List<BoxShadow> get hero => [
         BoxShadow(
           color: const Color(0xFF1A4FBF).withValues(alpha: 0.28),
@@ -109,10 +107,7 @@ abstract final class AppShadows {
         ),
       ];
 
-  // Convenience alias kept for existing callers (news_detail, etc.)
-  static List<BoxShadow> get elevated => hero;
-
-  // Soft upward shadow for bottom nav
+  /// Soft upward shadow for bottom navigation bar.
   static const List<BoxShadow> soft = [
     BoxShadow(
       color: Color(0x14000000),
@@ -128,10 +123,12 @@ abstract final class AppMotion {
   static const Duration slow = Duration(milliseconds: 420);
   static const Duration page = Duration(milliseconds: 500);
 
+  /// M3 emphasized easing — for entrances.
   static const Curve emphasized = Cubic(0.2, 0, 0, 1);
-  static const Curve spring = Cubic(0.34, 1.56, 0.64, 1);
-  static const Curve springOut = Cubic(0.22, 1.0, 0.36, 1.0);
 
-  // Alias used by existing files
-  static const Curve standard = Curves.easeOutCubic;
+  /// Overshoot spring — for snappy interactive feedback.
+  static const Curve spring = Cubic(0.34, 1.56, 0.64, 1);
+
+  /// Gentle spring out — for large UI elements entering the screen.
+  static const Curve springOut = Cubic(0.22, 1.0, 0.36, 1.0);
 }

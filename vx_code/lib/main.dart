@@ -11,6 +11,11 @@ void main() {
   runApp(const ProviderScope(child: VXCodeApp()));
 }
 
+/// Root application widget.
+///
+/// Watches [localeProvider] to switch between English and Malay at runtime.
+/// Uses [AppTheme.light()] for Material 3 theming with Plus Jakarta Sans +
+/// Space Grotesk typography.
 class VXCodeApp extends ConsumerWidget {
   const VXCodeApp({super.key});
 

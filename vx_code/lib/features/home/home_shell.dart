@@ -8,6 +8,11 @@ import '../news/list/news_list_page.dart';
 import 'home_tab.dart';
 import 'placeholder_tab.dart';
 
+/// Root shell widget that manages the 5-tab bottom navigation.
+///
+/// Uses an [IndexedStack] so each tab preserves its state when switching.
+/// The bottom nav bar uses [Pressable] + [AnimatedContainer] for smooth
+/// selection transitions with icon swap via [AnimatedSwitcher].
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
 
@@ -21,6 +26,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   @override
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
+
     final tabs = [
       _TabSpec(
         label: l.tabHome,
@@ -38,10 +44,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         label: l.tabMarket,
         icon: Icons.storefront_rounded,
         iconOutline: Icons.storefront_outlined,
-        view: PlaceholderTab(
-          label: l.tabMarket,
-          icon: Icons.storefront_outlined,
-        ),
+        view: PlaceholderTab(label: l.tabMarket, icon: Icons.storefront_outlined),
       ),
       _TabSpec(
         label: l.tabInbox,
@@ -53,10 +56,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         label: l.tabProfile,
         icon: Icons.person_rounded,
         iconOutline: Icons.person_outline_rounded,
-        view: PlaceholderTab(
-          label: l.tabProfile,
-          icon: Icons.person_outline_rounded,
-        ),
+        view: PlaceholderTab(label: l.tabProfile, icon: Icons.person_outline_rounded),
       ),
     ];
 
@@ -68,22 +68,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       bottomNavigationBar: SafeArea(
         top: false,
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.surface,
             border: Border(
-              top: BorderSide(
-                color: AppColors.divider.withValues(alpha: 0.6),
-                width: 0.5,
-              ),
+              top: BorderSide(color: AppColors.divider, width: 0.5),
             ),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x0F000000),
-                blurRadius: 24,
-                offset: Offset(0, -8),
-                spreadRadius: 0,
-              ),
-            ],
+            boxShadow: AppShadows.soft,
           ),
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.sm,
@@ -104,8 +94,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                     curve: AppMotion.emphasized,
                     margin: const EdgeInsets.symmetric(horizontal: 3),
                     padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.sm,
-                      horizontal: AppSpacing.xs,
+                      vertical: 8,
+                      horizontal: 4,
                     ),
                     decoration: BoxDecoration(
                       color: selected
@@ -146,7 +136,6 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                             color: selected
                                 ? AppColors.brandViolet
                                 : AppColors.textSecondary,
-                            fontFamily: 'PlusJakartaSans',
                           ),
                           child: Text(tab.label),
                         ),
@@ -164,12 +153,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 }
 
 class _TabSpec {
-  _TabSpec({
+  const _TabSpec({
     required this.label,
     required this.icon,
     required this.iconOutline,
     required this.view,
   });
+
   final String label;
   final IconData icon;
   final IconData iconOutline;

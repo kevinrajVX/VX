@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/tokens.dart';
 
+/// Simple placeholder screen for tabs not yet implemented.
+///
+/// Shows a centered column with the tab [icon] in shimmer color
+/// and the [label] below it.
 class PlaceholderTab extends StatelessWidget {
-  const PlaceholderTab({super.key, required this.label, required this.icon});
+  const PlaceholderTab({
+    super.key,
+    required this.label,
+    required this.icon,
+  });
 
   final String label;
   final IconData icon;
@@ -16,24 +24,19 @@ class PlaceholderTab extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                shape: BoxShape.circle,
-                boxShadow: AppShadows.card,
-              ),
-              child: Icon(icon, size: 36, color: AppColors.brandViolet),
+            Icon(
+              icon,
+              size: 64,
+              color: AppColors.shimmer,
             ),
-            const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: 16),
             Text(
               label,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            const Text(
-              'Coming next in the build',
-              style: TextStyle(color: AppColors.textSecondary),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),

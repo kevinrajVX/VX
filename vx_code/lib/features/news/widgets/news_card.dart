@@ -9,6 +9,10 @@ import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/tag_pill.dart';
 import '../detail/news_detail_page.dart';
 
+/// A news item card with an [OpenContainer] container-transform transition.
+///
+/// Closed state: image gradient with title overlay, tag pill, and metadata row.
+/// Opens to [NewsDetailPage] with a full-screen expand animation.
 class NewsCard extends ConsumerWidget {
   const NewsCard({
     super.key,
@@ -39,14 +43,12 @@ class NewsCard extends ConsumerWidget {
         closedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.card),
         ),
-        closedBuilder: (context, openContainer) {
-          return _ClosedCard(
-            item: item,
-            localeCode: localeCode,
-            minReadLabel: l.minRead(item.minRead),
-            onTap: openContainer,
-          );
-        },
+        closedBuilder: (context, openContainer) => _ClosedCard(
+          item: item,
+          localeCode: localeCode,
+          minReadLabel: l.minRead(item.minRead),
+          onTap: openContainer,
+        ),
         openBuilder: (context, _) => NewsDetailPage(item: item),
       ),
     );
@@ -74,21 +76,21 @@ class _ClosedCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.card),
-          boxShadow: AppShadows.elevated,
+          boxShadow: AppShadows.card,
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image area — 68% of height
+            // Image area — flex 65
             Expanded(
-              flex: 68,
+              flex: 65,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  // Gradient image
+                  // Gradient image with Hero tag
                   Hero(
-                    tag: 'news-image-${item.id}',
+                    tag: 'news-img-${item.id}',
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -99,15 +101,7 @@ class _ClosedCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Geometric decoration overlay
-                  Positioned.fill(
-                    child: CustomPaint(
-                      painter: _CardDecorationPainter(
-                        color: Colors.white.withValues(alpha: 0.07),
-                      ),
-                    ),
-                  ),
-                  // Bottom gradient scrim for title legibility
+                  // Dark bottom scrim for title legibility
                   Positioned.fill(
                     child: DecoratedBox(
                       decoration: BoxDecoration(
@@ -123,44 +117,13 @@ class _ClosedCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Tag pill top-left
+                  // Tag pill — top-left
                   Positioned(
                     top: AppSpacing.md,
                     left: AppSpacing.md,
                     child: TagPill(label: item.tag, color: item.tagColor),
                   ),
-                  // Read time top-right
-                  Positioned(
-                    top: AppSpacing.md,
-                    right: AppSpacing.md,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.30),
-                        borderRadius: BorderRadius.circular(AppRadius.pill),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.access_time_rounded,
-                            size: 10,
-                            color: Colors.white70,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            minReadLabel,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Title overlay
+                  // Title — bottom overlay, white, 14px w700
                   Positioned(
                     bottom: AppSpacing.md,
                     left: AppSpacing.md,
@@ -171,19 +134,19 @@ class _ClosedCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 15,
-                        letterSpacing: -0.3,
-                        height: 1.25,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.2,
+                        height: 1.3,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            // Meta row
+            // Meta row — flex 35
             Expanded(
-              flex: 32,
+              flex: 35,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.lg,
@@ -203,12 +166,18 @@ class _ClosedCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const Spacer(),
+                    const Icon(
+                      Icons.access_time_rounded,
+                      size: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                    const SizedBox(width: 4),
                     Text(
-                      _formatDate(item.publishedAt),
+                      minReadLabel,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -221,36 +190,4 @@ class _ClosedCard extends StatelessWidget {
       ),
     );
   }
-
-  String _formatDate(DateTime d) {
-    final now = DateTime.now();
-    final diff = now.difference(d).inDays;
-    if (diff == 0) return 'Today';
-    if (diff == 1) return 'Yesterday';
-    if (diff < 7) return '${diff}d ago';
-    return '${d.day}/${d.month}';
-  }
-}
-
-class _CardDecorationPainter extends CustomPainter {
-  const _CardDecorationPainter({required this.color});
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    // Large circle top-right
-    canvas.drawCircle(Offset(size.width * 0.85, size.height * 0.1), 60, paint);
-    // Medium circle bottom-left
-    canvas.drawCircle(Offset(size.width * 0.1, size.height * 0.85), 40, paint);
-    // Small circle center-right
-    canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.55), 24, paint);
-  }
-
-  @override
-  bool shouldRepaint(_CardDecorationPainter old) => false;
 }

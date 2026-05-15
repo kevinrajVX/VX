@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import '../theme/tokens.dart';
 import 'pressable.dart';
 
+/// A Pressable pill-shaped button with two appearance variants.
+///
+/// Default: dark [AppColors.textPrimary] background, white text.
+/// [onBrand] = true: [AppColors.brandViolet] background, white text.
+///
+/// Set [compact] for reduced padding. Provide [icon] for a leading icon.
 class DarkPillButton extends StatelessWidget {
   const DarkPillButton({
     super.key,
@@ -21,8 +27,9 @@ class DarkPillButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fg = onBrand ? AppColors.textPrimary : Colors.white;
-    final bg = onBrand ? Colors.white : AppColors.textPrimary;
+    final bg = onBrand ? AppColors.brandViolet : AppColors.textPrimary;
+    const fg = Colors.white;
+
     return Pressable(
       onTap: onPressed,
       child: Container(
@@ -33,16 +40,7 @@ class DarkPillButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(AppRadius.pill),
-          boxShadow: onBrand
-              ? AppShadows.card
-              : [
-                  BoxShadow(
-                    color: AppColors.textPrimary.withValues(alpha: 0.18),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
-                    spreadRadius: -4,
-                  ),
-                ],
+          boxShadow: AppShadows.card,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

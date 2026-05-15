@@ -5,6 +5,10 @@ import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/pressable.dart';
 
+/// A 3-column grid of service shortcut chips.
+///
+/// Each chip is a white card with a gray icon container on the left and a
+/// label on the right. Cells animate in with a staggered fadeIn + slideY.
 class ServicesGrid extends StatelessWidget {
   const ServicesGrid({super.key, required this.onServiceTap});
 
@@ -16,7 +20,7 @@ class ServicesGrid extends StatelessWidget {
     final services = <_Service>[
       _Service('pay-dues', l.servicePayDues, Icons.payments_outlined),
       _Service('statements', l.serviceStatements, Icons.download_outlined),
-      _Service('top-up', l.serviceTopUpShares, Icons.add_circle_outline_rounded),
+      _Service('top-up', l.serviceTopUpShares, Icons.add_circle_outline),
       _Service('marketplace', l.serviceMarketplace, Icons.storefront_outlined),
       _Service('enquiry', l.serviceEnquiry, Icons.support_agent_outlined),
       _Service('events', l.serviceEvents, Icons.event_outlined),
@@ -29,13 +33,12 @@ class ServicesGrid extends StatelessWidget {
       itemCount: services.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        mainAxisSpacing: AppSpacing.sm,
-        crossAxisSpacing: AppSpacing.sm,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
         childAspectRatio: 1.9,
       ),
       itemBuilder: (context, i) {
         final s = services[i];
-
         return Pressable(
           onTap: () => onServiceTap(s.id),
           pressedScale: 0.94,
@@ -51,22 +54,22 @@ class ServicesGrid extends StatelessWidget {
             ),
             child: Row(
               children: [
-                // Monochrome icon container — matches reference
+                // Gray icon container (34×34, radius 10)
                 Container(
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceMuted,
+                    color: const Color(0xFFF3F4F6),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   alignment: Alignment.center,
                   child: Icon(
                     s.icon,
-                    size: 18,
+                    size: 17,
                     color: AppColors.textSecondary,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     s.label,
@@ -85,11 +88,11 @@ class ServicesGrid extends StatelessWidget {
           ),
         )
             .animate()
-            .fadeIn(delay: (55 * i).ms, duration: 260.ms)
+            .fadeIn(delay: (50 * i).ms, duration: 260.ms)
             .slideY(
-              begin: 0.12,
+              begin: 0.1,
               end: 0,
-              delay: (55 * i).ms,
+              delay: (50 * i).ms,
               duration: 320.ms,
               curve: AppMotion.emphasized,
             );
@@ -99,7 +102,7 @@ class ServicesGrid extends StatelessWidget {
 }
 
 class _Service {
-  _Service(this.id, this.label, this.icon);
+  const _Service(this.id, this.label, this.icon);
   final String id;
   final String label;
   final IconData icon;

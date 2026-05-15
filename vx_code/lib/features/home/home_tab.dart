@@ -18,6 +18,16 @@ import '../news/widgets/news_card.dart';
 import 'widgets/hero_card.dart';
 import 'widgets/services_grid.dart';
 
+/// Main home screen tab.
+///
+/// Builds a [CustomScrollView] with:
+/// 1. TopBar (logo + language toggle + notifications)
+/// 2. HeroCard (member data)
+/// 3. Services section
+/// 4. Latest News horizontal list
+/// 5. Upcoming Events column
+///
+/// Supports pull-to-refresh which invalidates all providers.
 class HomeTab extends ConsumerWidget {
   const HomeTab({super.key});
 
@@ -31,128 +41,136 @@ class HomeTab extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: RefreshIndicator(
-          color: AppColors.brandViolet,
-          backgroundColor: AppColors.surface,
-          onRefresh: () async {
-            ref.invalidate(memberProvider);
-            ref.invalidate(newsProvider);
-            ref.invalidate(eventsProvider);
-            await Future.delayed(const Duration(milliseconds: 600));
-          },
+        color: AppColors.brandViolet,
+        backgroundColor: AppColors.surface,
+        onRefresh: () async {
+          ref.invalidate(memberProvider);
+          ref.invalidate(newsProvider);
+          ref.invalidate(eventsProvider);
+          await Future.delayed(const Duration(milliseconds: 600));
+        },
         child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+          slivers: [
+            // 1 — TopBar inside SafeArea
+            SliverToBoxAdapter(
+              child: SafeArea(
+                bottom: false,
+                child: _TopBar(),
+              ),
             ),
-            slivers: [
-              SliverToBoxAdapter(child: SafeArea(child: _TopBar())),
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.screenPadding,
-                  AppSpacing.sm,
-                  AppSpacing.screenPadding,
-                  AppSpacing.huge,
-                ),
-                sliver: SliverList.list(
-                  children: [
-                    memberAsync.when(
-                      loading: () => const _HeroSkeleton(),
-                      error: (e, _) => _ErrorBox(message: '$e'),
-                      data: (m) => HeroCard(
-                        member: m,
-                        onViewStatement: () {},
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxxl),
-                    SectionHeader(title: l.services),
-                    const SizedBox(height: AppSpacing.lg),
-                    ServicesGrid(onServiceTap: (_) {}),
-                    const SizedBox(height: AppSpacing.xxxl),
-                    SectionHeader(
-                      title: l.latestNews,
-                      actionLabel: l.seeAll,
-                      onAction: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const NewsListPage(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    newsAsync.when(
-                      loading: () => const _NewsRowSkeleton(),
-                      error: (e, _) => _ErrorBox(message: '$e'),
-                      data: (items) => SizedBox(
-                        height: 256,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          padding: EdgeInsets.zero,
-                          itemCount: items.length,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(width: AppSpacing.md),
-                          itemBuilder: (context, i) {
-                            return NewsCard(item: items[i], height: 256)
-                                .animate()
-                                .fadeIn(
-                                  delay: (60 * i).ms,
-                                  duration: 300.ms,
-                                )
-                                .slideX(
-                                  begin: 0.1,
-                                  end: 0,
-                                  delay: (60 * i).ms,
-                                  duration: 360.ms,
-                                  curve: AppMotion.emphasized,
-                                )
-                                .scale(
-                                  begin: const Offset(0.92, 0.92),
-                                  delay: (60 * i).ms,
-                                  duration: 400.ms,
-                                  curve: AppMotion.springOut,
-                                );
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxxl),
-                    SectionHeader(title: l.upcomingEvents),
-                    const SizedBox(height: AppSpacing.lg),
-                    eventsAsync.when(
-                      loading: () => const _EventsSkeleton(),
-                      error: (e, _) => _ErrorBox(message: '$e'),
-                      data: (items) => Column(
-                        children: [
-                          for (var i = 0; i < items.length; i++) ...[
-                            _EventRow(item: items[i])
-                                .animate()
-                                .fadeIn(delay: (80 * i).ms, duration: 320.ms)
-                                .slideY(
-                                  begin: 0.12,
-                                  end: 0,
-                                  delay: (80 * i).ms,
-                                  duration: 380.ms,
-                                  curve: AppMotion.emphasized,
-                                )
-                                .scale(
-                                  begin: const Offset(0.96, 0.96),
-                                  delay: (80 * i).ms,
-                                  duration: 380.ms,
-                                  curve: AppMotion.springOut,
-                                ),
-                            if (i < items.length - 1)
-                              const SizedBox(height: AppSpacing.md),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ],
+
+            // 2 — HeroCard with horizontal screen padding
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(
+                child: memberAsync.when(
+                  loading: () => const _HeroSkeleton(),
+                  error: (e, _) => _ErrorBox(message: '$e'),
+                  data: (m) => HeroCard(member: m, onViewStatement: () {}),
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // 3-5 — Content sections
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.screenPadding,
+                28,
+                AppSpacing.screenPadding,
+                80,
+              ),
+              sliver: SliverList.list(
+                children: [
+                  // Services section
+                  SectionHeader(title: l.services),
+                  const SizedBox(height: 12),
+                  ServicesGrid(onServiceTap: (_) {}),
+
+                  const SizedBox(height: 28),
+
+                  // Latest News section
+                  SectionHeader(
+                    title: l.latestNews,
+                    actionLabel: l.seeAll,
+                    onAction: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const NewsListPage(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  newsAsync.when(
+                    loading: () => const _NewsRowSkeleton(),
+                    error: (e, _) => _ErrorBox(message: '$e'),
+                    data: (items) => SizedBox(
+                      height: 256,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        itemCount: items.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: AppSpacing.md),
+                        itemBuilder: (context, i) {
+                          return NewsCard(item: items[i], height: 256)
+                              .animate()
+                              .fadeIn(delay: (60 * i).ms, duration: 300.ms)
+                              .slideX(
+                                begin: 0.1,
+                                end: 0,
+                                delay: (60 * i).ms,
+                                duration: 360.ms,
+                                curve: AppMotion.emphasized,
+                              );
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  // Upcoming Events section
+                  SectionHeader(title: l.upcomingEvents),
+                  const SizedBox(height: 12),
+                  eventsAsync.when(
+                    loading: () => const _EventsSkeleton(),
+                    error: (e, _) => _ErrorBox(message: '$e'),
+                    data: (items) => Column(
+                      children: [
+                        for (var i = 0; i < items.length; i++) ...[
+                          _EventRow(item: items[i])
+                              .animate()
+                              .fadeIn(
+                                delay: (80 * i).ms,
+                                duration: 320.ms,
+                              )
+                              .slideY(
+                                begin: 0.12,
+                                end: 0,
+                                delay: (80 * i).ms,
+                                duration: 380.ms,
+                                curve: AppMotion.emphasized,
+                              ),
+                          if (i < items.length - 1)
+                            const SizedBox(height: AppSpacing.md),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }
+
+// ─── Top bar ──────────────────────────────────────────────────────────────────
 
 class _TopBar extends ConsumerWidget {
   @override
@@ -168,47 +186,44 @@ class _TopBar extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          const KoperasiLogo(size: 40, showWordmark: true),
+          const KoperasiLogo(size: 38, showWordmark: true),
           const Spacer(),
           // Language toggle pill
           Pressable(
             onTap: () => ref.read(localeProvider.notifier).toggle(),
             child: Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
+                horizontal: 12,
+                vertical: 8,
               ),
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(AppRadius.pill),
-                border: Border.all(
-                  color: AppColors.divider.withValues(alpha: 0.7),
-                  width: 0.8,
-                ),
-                boxShadow: AppShadows.soft,
+                boxShadow: AppShadows.card,
               ),
               child: Row(
-                    children: [
-                      const Icon(
-                        Icons.language,
-                        size: 13,
-                        color: AppColors.textSecondary,
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        locale.languageCode == 'en'
-                            ? 'EN · ${l.languageToggle}'
-                            : 'BM · ${l.languageToggle}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ],
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.language,
+                    size: 13,
+                    color: AppColors.textSecondary,
                   ),
-                ),
+                  const SizedBox(width: 5),
+                  Text(
+                    locale.languageCode == 'en'
+                        ? 'EN · ${l.languageToggle}'
+                        : '${l.languageToggle} · EN',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
             ),
+          ),
           const SizedBox(width: AppSpacing.sm),
           SoftIconButton(
             icon: Icons.notifications_none_rounded,
@@ -220,8 +235,11 @@ class _TopBar extends ConsumerWidget {
   }
 }
 
+// ─── Event row ────────────────────────────────────────────────────────────────
+
 class _EventRow extends ConsumerWidget {
   const _EventRow({required this.item});
+
   final EventItem item;
 
   @override
@@ -242,10 +260,10 @@ class _EventRow extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            // Date block with gradient
+            // Date block with gradient — 56×56, radius md
             Container(
-              width: 58,
-              height: 58,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -270,7 +288,7 @@ class _EventRow extends ConsumerWidget {
                     day,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.w800,
                       height: 1,
                     ),
@@ -288,13 +306,16 @@ class _EventRow extends ConsumerWidget {
                 ],
               ),
             ),
+
             const SizedBox(width: AppSpacing.lg),
+
+            // Title + tag + venue/time
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TagPill(label: item.tag, color: item.tagColor),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 4),
                   Text(
                     item.localizedTitle(locale),
                     maxLines: 1,
@@ -331,17 +352,19 @@ class _EventRow extends ConsumerWidget {
                 ],
               ),
             ),
+
+            // Chevron indicator — 26×26, surfaceMuted bg, sm radius
             Container(
-              width: 28,
-              height: 28,
+              width: 26,
+              height: 26,
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: AppColors.surfaceMuted,
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               child: const Icon(
                 Icons.chevron_right_rounded,
+                size: 16,
                 color: AppColors.textSecondary,
-                size: 18,
               ),
             ),
           ],
@@ -351,21 +374,17 @@ class _EventRow extends ConsumerWidget {
   }
 }
 
+// ─── Skeleton loaders ─────────────────────────────────────────────────────────
+
 class _HeroSkeleton extends StatelessWidget {
   const _HeroSkeleton();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 340,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.shimmer,
-            AppColors.shimmer.withValues(alpha: 0.7),
-          ],
-        ),
+        color: AppColors.shimmer,
         borderRadius: BorderRadius.circular(AppRadius.card),
       ),
     );
@@ -374,6 +393,7 @@ class _HeroSkeleton extends StatelessWidget {
 
 class _NewsRowSkeleton extends StatelessWidget {
   const _NewsRowSkeleton();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -399,6 +419,7 @@ class _NewsRowSkeleton extends StatelessWidget {
 
 class _EventsSkeleton extends StatelessWidget {
   const _EventsSkeleton();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -419,9 +440,13 @@ class _EventsSkeleton extends StatelessWidget {
   }
 }
 
+// ─── Error box ────────────────────────────────────────────────────────────────
+
 class _ErrorBox extends StatelessWidget {
   const _ErrorBox({required this.message});
+
   final String message;
+
   @override
   Widget build(BuildContext context) {
     return Container(

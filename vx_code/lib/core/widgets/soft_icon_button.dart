@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import '../theme/tokens.dart';
 import 'pressable.dart';
 
+/// Circular icon button: white surface, card shadow, [AppColors.textPrimary] icon.
+///
+/// Fixed size 40×40. [onBrand] variant uses [AppColors.brandViolet] background
+/// and white icon.
 class SoftIconButton extends StatelessWidget {
   const SoftIconButton({
     super.key,
     required this.icon,
     required this.onPressed,
-    this.size = 44,
+    this.size = 40,
     this.onBrand = false,
   });
 
@@ -25,18 +29,13 @@ class SoftIconButton extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: onBrand
-              ? Colors.white.withValues(alpha: 0.18)
-              : AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
+          color: onBrand ? AppColors.brandViolet : AppColors.surface,
+          shape: BoxShape.circle,
           boxShadow: onBrand ? null : AppShadows.card,
-          border: onBrand
-              ? Border.all(color: Colors.white.withValues(alpha: 0.24))
-              : null,
         ),
         child: Icon(
           icon,
-          size: size * 0.42,
+          size: size * 0.45,
           color: onBrand ? Colors.white : AppColors.textPrimary,
         ),
       ),

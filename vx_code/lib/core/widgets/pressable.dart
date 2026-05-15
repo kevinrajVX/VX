@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../theme/tokens.dart';
 
-/// Wraps [child] with a scale-down animation on press.
+/// Wraps [child] with a scale-down animation on tap-down.
 ///
-/// On tap-down it shrinks to [pressedScale] using [AppMotion.fast] +
-/// [AppMotion.emphasized]. On release it springs back with [AppMotion.spring].
+/// Shrinks to [pressedScale] on press using [AppMotion.fast] + [AppMotion.emphasized].
+/// Springs back with [AppMotion.spring] on release.
 class Pressable extends StatefulWidget {
   const Pressable({
     super.key,
@@ -13,14 +13,12 @@ class Pressable extends StatefulWidget {
     required this.onTap,
     this.pressedScale = 0.97,
     this.borderRadius,
-    this.hapticOnTap = true,
   });
 
   final Widget child;
   final VoidCallback onTap;
   final double pressedScale;
   final BorderRadius? borderRadius;
-  final bool hapticOnTap;
 
   @override
   State<Pressable> createState() => _PressableState();

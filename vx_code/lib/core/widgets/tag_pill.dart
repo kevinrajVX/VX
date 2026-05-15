@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../mock/models.dart';
 import '../theme/tokens.dart';
 
+/// A small rounded pill with a [label] and a [color] variant.
+///
+/// Uses [TagColor] enum to map to the appropriate background and text colors.
+/// 11px w700 text, horizontal padding 8, vertical padding 4.
 class TagPill extends StatelessWidget {
   const TagPill({super.key, required this.label, required this.color});
 
@@ -26,10 +30,7 @@ class TagPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = _palette;
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.xs + 2,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: p.bg,
         borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -37,8 +38,8 @@ class TagPill extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
           color: p.fg,
           letterSpacing: 0.1,
         ),

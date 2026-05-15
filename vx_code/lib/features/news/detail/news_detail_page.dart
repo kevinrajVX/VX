@@ -11,6 +11,11 @@ import '../../../core/widgets/dark_pill_button.dart';
 import '../../../core/widgets/soft_icon_button.dart';
 import '../../../core/widgets/tag_pill.dart';
 
+/// Full-screen news article detail page.
+///
+/// Features a [SliverAppBar] with a Hero-tagged gradient image that expands
+/// to 300px and pins on scroll. The body contains the author row, summary,
+/// and full article body text, plus bookmark/share CTAs.
 class NewsDetailPage extends ConsumerWidget {
   const NewsDetailPage({super.key, required this.item});
 
@@ -27,7 +32,7 @@ class NewsDetailPage extends ConsumerWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 320,
+            expandedHeight: 300,
             pinned: true,
             backgroundColor: AppColors.background,
             elevation: 0,
@@ -75,7 +80,7 @@ class NewsDetailPage extends ConsumerWidget {
                   AppSpacing.md,
                 ),
                 child: Hero(
-                  tag: 'news-image-${item.id}',
+                  tag: 'news-img-${item.id}',
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(AppRadius.card),
@@ -126,6 +131,7 @@ class NewsDetailPage extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Author row
                   Row(
                     children: [
                       Container(
@@ -197,20 +203,26 @@ class NewsDetailPage extends ConsumerWidget {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: AppSpacing.xxl),
+
+                  // Summary — 16px w600
                   Text(
                     item.localizedSummary(locale),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
-                      height: 1.45,
+                      height: 1.5,
                     ),
                   )
                       .animate()
                       .fadeIn(delay: 120.ms, duration: 320.ms)
                       .slideY(begin: 0.06, end: 0),
+
                   const SizedBox(height: AppSpacing.xl),
+
+                  // Body — 15px, line-height 1.6
                   Text(
                     item.localizedBody(locale),
                     style: const TextStyle(
@@ -222,7 +234,10 @@ class NewsDetailPage extends ConsumerWidget {
                       .animate()
                       .fadeIn(delay: 220.ms, duration: 360.ms)
                       .slideY(begin: 0.04, end: 0),
+
                   const SizedBox(height: AppSpacing.xxl),
+
+                  // CTA buttons: Bookmark + Share
                   Row(
                     children: [
                       Expanded(

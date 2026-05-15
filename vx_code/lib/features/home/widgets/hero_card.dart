@@ -7,6 +7,14 @@ import '../../../core/mock/models.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/dark_pill_button.dart';
 
+/// The hero card shown at the top of the home screen.
+///
+/// Displays a full-width gradient card with:
+/// - Welcome + member name header (centered)
+/// - Claims-in-progress pill
+/// - Inner shares card with document illustration
+///
+/// All child elements animate in with staggered fade + slide using flutter_animate.
 class HeroCard extends StatelessWidget {
   const HeroCard({
     super.key,
@@ -20,11 +28,12 @@ class HeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
-    final currency = NumberFormat.currency(
+    final currencyFmt = NumberFormat.currency(
       locale: 'ms_MY',
       symbol: '${member.sharesCurrency} ',
       decimalDigits: 2,
     );
+    final asOfDate = DateFormat.yMMMd().format(member.sharesAsOf);
 
     return Container(
       decoration: BoxDecoration(
@@ -36,23 +45,23 @@ class HeroCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.card),
         child: Stack(
           children: [
-            // Vivid blue glow — top-right (the electric blue in image 2)
+            // Vivid blue glow — top-right
             const Positioned(
               right: -60,
               top: -60,
-              child: _GlowBlob(size: 300, color: Color(0x881A56DB)),
+              child: _GlowBlob(size: 280, color: Color(0x881A56DB)),
             ),
-            // Soft white glow — center-top (creates the lens/highlight effect)
+            // Soft white lens — center-top
             const Positioned(
               right: 40,
-              top: 20,
-              child: _GlowBlob(size: 140, color: Color(0x55FFFFFF)),
+              top: 10,
+              child: _GlowBlob(size: 130, color: Color(0x55FFFFFF)),
             ),
-            // Silver/blue glow — bottom-left
+            // Silver glow — bottom-left
             const Positioned(
-              left: -40,
+              left: -30,
               bottom: -40,
-              child: _GlowBlob(size: 220, color: Color(0x40A0B8D8)),
+              child: _GlowBlob(size: 200, color: Color(0x40A0B8D8)),
             ),
             // Content
             Padding(
@@ -65,18 +74,20 @@ class HeroCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Welcome text — centered
+                  // Welcome label
                   Text(
                     l.welcomeBack,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.85),
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      letterSpacing: 0.2,
                     ),
                   ).animate().fadeIn(delay: 60.ms, duration: 320.ms),
+
                   const SizedBox(height: 6),
-                  // Name — centered, large
+
+                  // Member name — large, white, centered
                   Text(
                     member.name,
                     textAlign: TextAlign.center,
@@ -97,27 +108,31 @@ class HeroCard extends StatelessWidget {
                         duration: 400.ms,
                         curve: AppMotion.springOut,
                       ),
+
                   const SizedBox(height: AppSpacing.xxl),
-                  // Claims pill — white, full width
+
+                  // Claims pill — full width
                   _ClaimsPill(count: member.enquiriesInProgress)
                       .animate()
                       .fadeIn(delay: 180.ms, duration: 300.ms)
                       .slideY(
-                        begin: 0.1,
+                        begin: 0.10,
                         end: 0,
                         delay: 180.ms,
                         duration: 340.ms,
                         curve: AppMotion.emphasized,
                       ),
+
                   const SizedBox(height: AppSpacing.md),
-                  // Inner shares card
+
+                  // Inner shares card — full width
                   _SharesCard(
-                    total: currency.format(member.sharesTotal),
-                    asOfDate: DateFormat.yMMMd().format(member.sharesAsOf),
+                    totalFormatted: currencyFmt.format(member.sharesTotal),
+                    asOfDate: asOfDate,
                     monthlyChange: member.monthlyChange,
                     currency: member.sharesCurrency,
-                    label: l.totalShares,
-                    cta: l.viewStatement,
+                    sharesLabel: l.totalShares,
+                    ctaLabel: l.viewStatement,
                     onCta: onViewStatement,
                   )
                       .animate()
@@ -125,6 +140,12 @@ class HeroCard extends StatelessWidget {
                       .slideY(
                         begin: 0.15,
                         end: 0,
+                        delay: 260.ms,
+                        duration: 440.ms,
+                        curve: AppMotion.springOut,
+                      )
+                      .scale(
+                        begin: const Offset(0.96, 0.96),
                         delay: 260.ms,
                         duration: 440.ms,
                         curve: AppMotion.springOut,
@@ -150,6 +171,7 @@ class HeroCard extends StatelessWidget {
 
 class _ClaimsPill extends StatelessWidget {
   const _ClaimsPill({required this.count});
+
   final int count;
 
   @override
@@ -171,10 +193,10 @@ class _ClaimsPill extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Colored badge
+          // Violet circle badge with count (38×38)
           Container(
-            width: 36,
-            height: 36,
+            width: 38,
+            height: 38,
             decoration: const BoxDecoration(
               color: AppColors.brandViolet,
               shape: BoxShape.circle,
@@ -183,9 +205,9 @@ class _ClaimsPill extends StatelessWidget {
             child: Text(
               '$count',
               style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 14,
                 color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ),
@@ -195,8 +217,8 @@ class _ClaimsPill extends StatelessWidget {
               l.claimsInProgress(count),
               style: const TextStyle(
                 color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
                 fontSize: 14,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -215,21 +237,21 @@ class _ClaimsPill extends StatelessWidget {
 
 class _SharesCard extends StatelessWidget {
   const _SharesCard({
-    required this.total,
+    required this.totalFormatted,
     required this.asOfDate,
     required this.monthlyChange,
     required this.currency,
-    required this.label,
-    required this.cta,
+    required this.sharesLabel,
+    required this.ctaLabel,
     required this.onCta,
   });
 
-  final String total;
+  final String totalFormatted;
   final String asOfDate;
   final double monthlyChange;
   final String currency;
-  final String label;
-  final String cta;
+  final String sharesLabel;
+  final String ctaLabel;
   final VoidCallback onCta;
 
   @override
@@ -242,12 +264,12 @@ class _SharesCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.card),
-        boxShadow: AppShadows.elevated,
+        boxShadow: AppShadows.hero,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Upper section: title + illustration
+          // Upper section: label row + illustration
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xl,
@@ -263,15 +285,24 @@ class _SharesCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        label,
+                        sharesLabel,
                         style: const TextStyle(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 18,
-                          letterSpacing: -0.3,
+                          color: AppColors.textSecondary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 8),
+                      Text(
+                        sharesLabel,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
                       Row(
                         children: [
                           const Icon(
@@ -293,10 +324,11 @@ class _SharesCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Large document illustration — matches the reference
+                const SizedBox(width: AppSpacing.md),
+                // Document illustration: 84×76
                 SizedBox(
-                  width: 80,
-                  height: 72,
+                  width: 84,
+                  height: 76,
                   child: CustomPaint(painter: _DocIllustration()),
                 ),
               ],
@@ -304,7 +336,7 @@ class _SharesCard extends StatelessWidget {
           ),
           // Divider
           const Divider(height: 1, thickness: 1, color: AppColors.divider),
-          // Lower section: amount + CTA
+          // Lower section: formatted total + change pill + CTA
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xl,
@@ -319,7 +351,7 @@ class _SharesCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        total,
+                        totalFormatted,
                         style: const TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 22,
@@ -327,7 +359,7 @@ class _SharesCard extends StatelessWidget {
                           letterSpacing: -0.5,
                         ),
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 4),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 7,
@@ -344,8 +376,8 @@ class _SharesCard extends StatelessWidget {
                           children: [
                             Icon(
                               isUp
-                                  ? Icons.trending_up
-                                  : Icons.trending_down,
+                                  ? Icons.trending_up_rounded
+                                  : Icons.trending_down_rounded,
                               size: 11,
                               color: isUp
                                   ? AppColors.tagGreenText
@@ -368,7 +400,12 @@ class _SharesCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                DarkPillButton(label: cta, onPressed: onCta, compact: true),
+                DarkPillButton(
+                  label: ctaLabel,
+                  onPressed: onCta,
+                  compact: true,
+                  onBrand: true,
+                ),
               ],
             ),
           ),
@@ -378,55 +415,59 @@ class _SharesCard extends StatelessWidget {
   }
 }
 
-// ─── Document illustration (CustomPainter) ────────────────────────────────────
+// ─── Document illustration (CustomPainter) ───────────────────────────────────
 
 class _DocIllustration extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final bgPaint = Paint()
+    // Back page — slightly offset right/down
+    final backPaint = Paint()
+      ..color = const Color(0xFFE0E4F0)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(10, 6, size.width - 18, size.height - 10),
+        const Radius.circular(10),
+      ),
+      backPaint,
+    );
+
+    // Front page
+    final frontPaint = Paint()
       ..color = const Color(0xFFEEF0F7)
       ..style = PaintingStyle.fill;
 
-    final shadowPaint = Paint()
-      ..color = const Color(0xFFDDE0ED)
-      ..style = PaintingStyle.fill;
-
-    // Back page (shadow page)
-    final backPage = RRect.fromRectAndRadius(
-      Rect.fromLTWH(10, 6, size.width - 18, size.height - 10),
-      const Radius.circular(10),
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(2, 0, size.width - 12, size.height - 8),
+        const Radius.circular(10),
+      ),
+      frontPaint,
     );
-    canvas.drawRRect(backPage, shadowPaint);
 
-    // Main page
-    final mainPage = RRect.fromRectAndRadius(
-      Rect.fromLTWH(2, 0, size.width - 12, size.height - 8),
-      const Radius.circular(10),
-    );
-    canvas.drawRRect(mainPage, bgPaint);
-
-    // Lines on the page
+    // 3 horizontal content lines in gray
     final linePaint = Paint()
       ..color = const Color(0xFFCDD1E4)
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
 
-    final lineStarts = [14.0, 22.0, 30.0];
-    final lineEnds = [size.width - 20, size.width - 26, size.width - 32];
-    for (var i = 0; i < lineStarts.length; i++) {
+    const lineYs = [14.0, 22.0, 30.0];
+    for (var i = 0; i < lineYs.length; i++) {
+      final endX = size.width - 20.0 - (i * 6.0);
       canvas.drawLine(
-        Offset(8, lineStarts[i]),
-        Offset(lineEnds[i], lineStarts[i]),
+        Offset(8, lineYs[i]),
+        Offset(endX, lineYs[i]),
         linePaint,
       );
     }
 
-    // Small bar chart at bottom
+    // 4 small bar chart bars at bottom (violet 30% opacity)
     final barPaint = Paint()
       ..color = AppColors.brandViolet.withValues(alpha: 0.30)
       ..style = PaintingStyle.fill;
 
-    final barHeights = [10.0, 16.0, 12.0, 18.0];
+    const barHeights = [10.0, 16.0, 12.0, 18.0];
     var bx = 8.0;
     const barWidth = 7.0;
     final baseY = size.height - 10.0;
@@ -446,10 +487,13 @@ class _DocIllustration extends CustomPainter {
   bool shouldRepaint(_DocIllustration old) => false;
 }
 
-// ─── Glow blob ────────────────────────────────────────────────────────────────
+// ─── Glow blob ───────────────────────────────────────────────────────────────
 
+/// An [IgnorePointer] circular container with a [RadialGradient] from [color]
+/// center to transparent edge, creating an atmospheric glow effect.
 class _GlowBlob extends StatelessWidget {
   const _GlowBlob({required this.size, required this.color});
+
   final double size;
   final Color color;
 
