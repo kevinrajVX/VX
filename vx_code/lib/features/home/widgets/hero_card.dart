@@ -6,15 +6,13 @@ import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/mock/models.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/dark_pill_button.dart';
+import '../../../core/widgets/soft_icon_button.dart';
 
 /// The hero card shown at the top of the home screen.
 ///
-/// Displays a full-width gradient card with:
-/// - Welcome + member name header (centered)
-/// - Claims-in-progress pill
-/// - Inner shares card with document illustration
-///
-/// All child elements animate in with staggered fade + slide using flutter_animate.
+/// Full-bleed: squared top corners (flush with screen top), rounded bottom corners.
+/// Background is the actual gradient image asset (blue → silver → white).
+/// Notification bell is overlaid in the top-right, inside SafeArea.
 class HeroCard extends StatelessWidget {
   const HeroCard({
     super.key,
@@ -35,122 +33,131 @@ class HeroCard extends StatelessWidget {
     );
     final asOfDate = DateFormat.yMMMd().format(member.sharesAsOf);
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        gradient: AppColors.heroGradient,
-        boxShadow: AppShadows.hero,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.card),
+    const bottomRadius = BorderRadius.only(
+      bottomLeft: Radius.circular(AppRadius.card),
+      bottomRight: Radius.circular(AppRadius.card),
+    );
+
+    return ClipRRect(
+      borderRadius: bottomRadius,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFF1A4FBF),
+        ),
         child: Stack(
           children: [
-            // Vivid blue glow — top-right
-            const Positioned(
-              right: -60,
-              top: -60,
-              child: _GlowBlob(size: 280, color: Color(0x881A56DB)),
-            ),
-            // Soft white lens — center-top
-            const Positioned(
-              right: 40,
-              top: 10,
-              child: _GlowBlob(size: 130, color: Color(0x55FFFFFF)),
-            ),
-            // Silver glow — bottom-left
-            const Positioned(
-              left: -30,
-              bottom: -40,
-              child: _GlowBlob(size: 200, color: Color(0x40A0B8D8)),
-            ),
-            // Content
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl,
-                AppSpacing.xxxl,
-                AppSpacing.xl,
-                AppSpacing.xl,
+            // Background image — the exact gradient the user sent
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/hero_bg.jpg',
+                fit: BoxFit.cover,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Welcome label
-                  Text(
-                    l.welcomeBack,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.85),
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ).animate().fadeIn(delay: 60.ms, duration: 320.ms),
+            ),
 
-                  const SizedBox(height: 6),
+            // Notification bell — top-right, inside SafeArea
+            Positioned(
+              top: 0,
+              right: 8,
+              child: SafeArea(
+                bottom: false,
+                child: SoftIconButton(
+                  icon: Icons.notifications_none_rounded,
+                  onPressed: () {},
+                ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+              ),
+            ),
 
-                  // Member name — large, white, centered
-                  Text(
-                    member.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 34,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -1.0,
-                      height: 1.1,
-                    ),
-                  )
-                      .animate()
-                      .fadeIn(delay: 100.ms, duration: 360.ms)
-                      .slideY(
-                        begin: 0.15,
-                        end: 0,
-                        delay: 100.ms,
-                        duration: 400.ms,
-                        curve: AppMotion.springOut,
+            // Main content — below status bar
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.xl,
+                  AppSpacing.xxxl,
+                  AppSpacing.xl,
+                  AppSpacing.xl,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Welcome label
+                    Text(
+                      l.welcomeBack,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
+                    ).animate().fadeIn(delay: 60.ms, duration: 320.ms),
 
-                  const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: 6),
 
-                  // Claims pill — full width
-                  _ClaimsPill(count: member.enquiriesInProgress)
-                      .animate()
-                      .fadeIn(delay: 180.ms, duration: 300.ms)
-                      .slideY(
-                        begin: 0.10,
-                        end: 0,
-                        delay: 180.ms,
-                        duration: 340.ms,
-                        curve: AppMotion.emphasized,
+                    // Member name
+                    Text(
+                      member.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 34,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -1.0,
+                        height: 1.1,
                       ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 100.ms, duration: 360.ms)
+                        .slideY(
+                          begin: 0.15,
+                          end: 0,
+                          delay: 100.ms,
+                          duration: 400.ms,
+                          curve: AppMotion.springOut,
+                        ),
 
-                  const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  // Inner shares card — full width
-                  _SharesCard(
-                    totalFormatted: currencyFmt.format(member.sharesTotal),
-                    asOfDate: asOfDate,
-                    monthlyChange: member.monthlyChange,
-                    currency: member.sharesCurrency,
-                    sharesLabel: l.totalShares,
-                    ctaLabel: l.viewStatement,
-                    onCta: onViewStatement,
-                  )
-                      .animate()
-                      .fadeIn(delay: 260.ms, duration: 400.ms)
-                      .slideY(
-                        begin: 0.15,
-                        end: 0,
-                        delay: 260.ms,
-                        duration: 440.ms,
-                        curve: AppMotion.springOut,
-                      )
-                      .scale(
-                        begin: const Offset(0.96, 0.96),
-                        delay: 260.ms,
-                        duration: 440.ms,
-                        curve: AppMotion.springOut,
-                      ),
-                ],
+                    // Claims pill
+                    _ClaimsPill(count: member.enquiriesInProgress)
+                        .animate()
+                        .fadeIn(delay: 180.ms, duration: 300.ms)
+                        .slideY(
+                          begin: 0.10,
+                          end: 0,
+                          delay: 180.ms,
+                          duration: 340.ms,
+                          curve: AppMotion.emphasized,
+                        ),
+
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Inner shares card
+                    _SharesCard(
+                      totalFormatted: currencyFmt.format(member.sharesTotal),
+                      asOfDate: asOfDate,
+                      monthlyChange: member.monthlyChange,
+                      currency: member.sharesCurrency,
+                      sharesLabel: l.totalShares,
+                      ctaLabel: l.viewStatement,
+                      onCta: onViewStatement,
+                    )
+                        .animate()
+                        .fadeIn(delay: 260.ms, duration: 400.ms)
+                        .slideY(
+                          begin: 0.15,
+                          end: 0,
+                          delay: 260.ms,
+                          duration: 440.ms,
+                          curve: AppMotion.springOut,
+                        )
+                        .scale(
+                          begin: const Offset(0.96, 0.96),
+                          delay: 260.ms,
+                          duration: 440.ms,
+                          curve: AppMotion.springOut,
+                        ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -160,7 +167,7 @@ class HeroCard extends StatelessWidget {
         .animate()
         .fadeIn(duration: 360.ms)
         .scale(
-          begin: const Offset(0.96, 0.96),
+          begin: const Offset(0.97, 0.97),
           duration: 460.ms,
           curve: AppMotion.springOut,
         );
@@ -193,7 +200,6 @@ class _ClaimsPill extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Violet circle badge with count (38×38)
           Container(
             width: 38,
             height: 38,
@@ -269,7 +275,6 @@ class _SharesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Upper section: label row + illustration
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xl,
@@ -325,7 +330,6 @@ class _SharesCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
-                // Document illustration: 84×76
                 SizedBox(
                   width: 84,
                   height: 76,
@@ -334,9 +338,7 @@ class _SharesCard extends StatelessWidget {
               ],
             ),
           ),
-          // Divider
           const Divider(height: 1, thickness: 1, color: AppColors.divider),
-          // Lower section: formatted total + change pill + CTA
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xl,
@@ -420,7 +422,6 @@ class _SharesCard extends StatelessWidget {
 class _DocIllustration extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // Back page — slightly offset right/down
     final backPaint = Paint()
       ..color = const Color(0xFFE0E4F0)
       ..style = PaintingStyle.fill;
@@ -433,7 +434,6 @@ class _DocIllustration extends CustomPainter {
       backPaint,
     );
 
-    // Front page
     final frontPaint = Paint()
       ..color = const Color(0xFFEEF0F7)
       ..style = PaintingStyle.fill;
@@ -446,7 +446,6 @@ class _DocIllustration extends CustomPainter {
       frontPaint,
     );
 
-    // 3 horizontal content lines in gray
     final linePaint = Paint()
       ..color = const Color(0xFFCDD1E4)
       ..strokeWidth = 2.5
@@ -462,7 +461,6 @@ class _DocIllustration extends CustomPainter {
       );
     }
 
-    // 4 small bar chart bars at bottom (violet 30% opacity)
     final barPaint = Paint()
       ..color = AppColors.brandViolet.withValues(alpha: 0.30)
       ..style = PaintingStyle.fill;
@@ -485,31 +483,4 @@ class _DocIllustration extends CustomPainter {
 
   @override
   bool shouldRepaint(_DocIllustration old) => false;
-}
-
-// ─── Glow blob ───────────────────────────────────────────────────────────────
-
-/// An [IgnorePointer] circular container with a [RadialGradient] from [color]
-/// center to transparent edge, creating an atmospheric glow effect.
-class _GlowBlob extends StatelessWidget {
-  const _GlowBlob({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [color, color.withValues(alpha: 0)],
-          ),
-        ),
-      ),
-    );
-  }
 }

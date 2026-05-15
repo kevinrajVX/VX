@@ -8,10 +8,8 @@ import '../../core/localization/locale_provider.dart';
 import '../../core/mock/mock_api.dart';
 import '../../core/mock/models.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/koperasi_logo.dart';
 import '../../core/widgets/pressable.dart';
 import '../../core/widgets/section_header.dart';
-import '../../core/widgets/soft_icon_button.dart';
 import '../../core/widgets/tag_pill.dart';
 import '../news/list/news_list_page.dart';
 import '../news/widgets/news_card.dart';
@@ -54,23 +52,12 @@ class HomeTab extends ConsumerWidget {
             parent: BouncingScrollPhysics(),
           ),
           slivers: [
-            // 1 — TopBar inside SafeArea
+            // Hero card — full bleed, no horizontal padding, flush to top
             SliverToBoxAdapter(
-              child: SafeArea(
-                bottom: false,
-                child: _TopBar(),
-              ),
-            ),
-
-            // 2 — HeroCard with horizontal screen padding
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverToBoxAdapter(
-                child: memberAsync.when(
-                  loading: () => const _HeroSkeleton(),
-                  error: (e, _) => _ErrorBox(message: '$e'),
-                  data: (m) => HeroCard(member: m, onViewStatement: () {}),
-                ),
+              child: memberAsync.when(
+                loading: () => const _HeroSkeleton(),
+                error: (e, _) => _ErrorBox(message: '$e'),
+                data: (m) => HeroCard(member: m, onViewStatement: () {}),
               ),
             ),
 
@@ -165,71 +152,6 @@ class HomeTab extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// ─── Top bar ──────────────────────────────────────────────────────────────────
-
-class _TopBar extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(localeProvider);
-    final l = AppL10n.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        AppSpacing.md,
-        AppSpacing.screenPadding,
-        AppSpacing.md,
-      ),
-      child: Row(
-        children: [
-          const KoperasiLogo(size: 38, showWordmark: true),
-          const Spacer(),
-          // Language toggle pill
-          Pressable(
-            onTap: () => ref.read(localeProvider.notifier).toggle(),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(AppRadius.pill),
-                boxShadow: AppShadows.card,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.language,
-                    size: 13,
-                    color: AppColors.textSecondary,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    locale.languageCode == 'en'
-                        ? 'EN · ${l.languageToggle}'
-                        : '${l.languageToggle} · EN',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          SoftIconButton(
-            icon: Icons.notifications_none_rounded,
-            onPressed: () {},
-          ),
-        ],
       ),
     );
   }
