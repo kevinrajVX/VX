@@ -14,12 +14,12 @@ class ServicesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
     final services = <_Service>[
-      _Service('pay-dues', l.servicePayDues, Icons.payments_rounded),
-      _Service('statements', l.serviceStatements, Icons.description_rounded),
-      _Service('top-up', l.serviceTopUpShares, Icons.add_circle_rounded),
-      _Service('marketplace', l.serviceMarketplace, Icons.storefront_rounded),
-      _Service('enquiry', l.serviceEnquiry, Icons.support_agent_rounded),
-      _Service('events', l.serviceEvents, Icons.event_rounded),
+      _Service('pay-dues', l.servicePayDues, Icons.payments_rounded, 0),
+      _Service('statements', l.serviceStatements, Icons.description_rounded, 1),
+      _Service('top-up', l.serviceTopUpShares, Icons.add_circle_rounded, 2),
+      _Service('marketplace', l.serviceMarketplace, Icons.storefront_rounded, 3),
+      _Service('enquiry', l.serviceEnquiry, Icons.support_agent_rounded, 4),
+      _Service('events', l.serviceEvents, Icons.event_rounded, 5),
     ];
 
     return GridView.builder(
@@ -29,79 +29,63 @@ class ServicesGrid extends StatelessWidget {
       itemCount: services.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        mainAxisSpacing: AppSpacing.md,
-        crossAxisSpacing: AppSpacing.md,
-        childAspectRatio: 0.88,
+        mainAxisSpacing: AppSpacing.sm,
+        crossAxisSpacing: AppSpacing.sm,
+        childAspectRatio: 2.1,
       ),
       itemBuilder: (context, i) {
         final s = services[i];
-        final gradient = AppColors.serviceGradients[i];
-        final bgTint = AppColors.serviceBgTints[i];
+        final gradient = AppColors.serviceGradients[s.colorIndex];
 
         return Pressable(
           onTap: () => onServiceTap(s.id),
-          pressedScale: 0.92,
+          pressedScale: 0.93,
           child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.sm,
+            ),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppRadius.xl),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               boxShadow: AppShadows.card,
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: bgTint,
-                borderRadius: BorderRadius.circular(AppRadius.xl),
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: AppSpacing.lg,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Icon container with gradient + glow shadow
-                  Container(
-                    width: 54,
-                    height: 54,
-                    decoration: BoxDecoration(
-                      gradient: gradient,
-                      borderRadius: BorderRadius.circular(AppRadius.lg),
-                      boxShadow: [
-                        BoxShadow(
-                          color: (gradient.colors.first).withValues(alpha: 0.40),
-                          blurRadius: 16,
-                          offset: const Offset(0, 6),
-                          spreadRadius: -2,
-                        ),
-                      ],
-                    ),
-                    alignment: Alignment.center,
-                    child: Icon(s.icon, size: 26, color: Colors.white),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    gradient: gradient,
+                    borderRadius: BorderRadius.circular(9),
                   ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
+                  alignment: Alignment.center,
+                  child: Icon(s.icon, size: 16, color: Colors.white),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
                     s.label,
-                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                      height: 1.2,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      height: 1.2,
-                      color: AppColors.textPrimary,
-                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         )
             .animate()
-            .fadeIn(delay: (70 * i).ms, duration: 300.ms)
+            .fadeIn(delay: (60 * i).ms, duration: 280.ms)
             .scale(
-              begin: const Offset(0.82, 0.82),
-              delay: (70 * i).ms,
-              duration: 480.ms,
+              begin: const Offset(0.85, 0.85),
+              delay: (60 * i).ms,
+              duration: 400.ms,
               curve: AppMotion.spring,
             );
       },
@@ -110,8 +94,9 @@ class ServicesGrid extends StatelessWidget {
 }
 
 class _Service {
-  _Service(this.id, this.label, this.icon);
+  _Service(this.id, this.label, this.icon, this.colorIndex);
   final String id;
   final String label;
   final IconData icon;
+  final int colorIndex;
 }

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
@@ -34,26 +32,21 @@ class HeroCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.card),
         child: Stack(
           children: [
-            // Large ambient glow — top-right
+            // Glow blob — top right
             const Positioned(
               right: -80,
               top: -80,
-              child: _GlowBlob(size: 320, color: Color(0x666366F1)),
+              child: _GlowBlob(size: 300, color: Color(0x606366F1)),
             ),
-            // Large ambient glow — bottom-left
+            // Glow blob — bottom left
             const Positioned(
               left: -60,
               bottom: -80,
-              child: _GlowBlob(size: 260, color: Color(0x554F86DC)),
+              child: _GlowBlob(size: 240, color: Color(0x504F86DC)),
             ),
-            // Accent glow — top-left corner
-            const Positioned(
-              left: -30,
-              top: -30,
-              child: _GlowBlob(size: 160, color: Color(0x33818CF8)),
-            ),
-            // Subtle dot grid texture
-            Positioned.fill(child: _DotGridPainter()),
+            // Dot texture
+            Positioned.fill(child: _DotTexture()),
+            // Content
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.xxl,
@@ -64,28 +57,27 @@ class HeroCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Top row: welcome + tier
                   Row(
                     children: [
                       Expanded(
                         child: Text(
                           l.welcomeBack,
-                          style: const TextStyle(
-                            color: AppColors.textOnBrandMuted,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.75),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            letterSpacing: 0.3,
                           ),
-                        )
-                            .animate()
-                            .fadeIn(delay: 60.ms, duration: 320.ms),
+                        ).animate().fadeIn(delay: 60.ms, duration: 300.ms),
                       ),
                       _TierBadge(tier: member.tier)
                           .animate()
-                          .fadeIn(delay: 100.ms, duration: 320.ms)
+                          .fadeIn(delay: 100.ms)
                           .slideX(begin: 0.2, end: 0, delay: 100.ms, duration: 320.ms, curve: AppMotion.emphasized),
                     ],
                   ),
                   const SizedBox(height: 6),
+                  // Member name
                   Text(
                     member.name,
                     style: const TextStyle(
@@ -97,16 +89,17 @@ class HeroCard extends StatelessWidget {
                     ),
                   )
                       .animate()
-                      .fadeIn(delay: 120.ms, duration: 380.ms)
-                      .slideY(begin: 0.2, end: 0, delay: 120.ms, duration: 380.ms, curve: AppMotion.springOut)
-                      .blur(begin: const Offset(4, 4), end: Offset.zero, delay: 120.ms, duration: 360.ms),
+                      .fadeIn(delay: 120.ms, duration: 360.ms)
+                      .slideY(begin: 0.2, end: 0, delay: 120.ms, duration: 380.ms, curve: AppMotion.springOut),
                   const SizedBox(height: AppSpacing.xl),
+                  // Claims pill
                   _ClaimsPill(count: member.enquiriesInProgress)
                       .animate()
-                      .fadeIn(delay: 200.ms, duration: 320.ms)
-                      .slideX(begin: -0.12, end: 0, delay: 200.ms, duration: 360.ms, curve: AppMotion.springOut),
+                      .fadeIn(delay: 200.ms, duration: 300.ms)
+                      .slideX(begin: -0.1, end: 0, delay: 200.ms, duration: 340.ms, curve: AppMotion.springOut),
                   const SizedBox(height: AppSpacing.lg),
-                  _GlassSharesCard(
+                  // Inner shares card
+                  _SharesCard(
                     total: currency.format(member.sharesTotal),
                     asOfDate: DateFormat.yMMMd().format(member.sharesAsOf),
                     monthlyChange: member.monthlyChange,
@@ -127,10 +120,12 @@ class HeroCard extends StatelessWidget {
       ),
     )
         .animate()
-        .fadeIn(duration: 400.ms)
-        .scale(begin: const Offset(0.94, 0.94), duration: 500.ms, curve: AppMotion.springOut);
+        .fadeIn(duration: 380.ms)
+        .scale(begin: const Offset(0.94, 0.94), duration: 480.ms, curve: AppMotion.springOut);
   }
 }
+
+// ─── Tier badge ─────────────────────────────────────────────────────────────
 
 class _TierBadge extends StatelessWidget {
   const _TierBadge({required this.tier});
@@ -143,7 +138,7 @@ class _TierBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.30), width: 1),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.28), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -165,6 +160,8 @@ class _TierBadge extends StatelessWidget {
   }
 }
 
+// ─── Claims pill ─────────────────────────────────────────────────────────────
+
 class _ClaimsPill extends StatelessWidget {
   const _ClaimsPill({required this.count});
   final int count;
@@ -172,60 +169,56 @@ class _ClaimsPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadius.pill),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(6, 6, 14, 6),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.14),
-            borderRadius: BorderRadius.circular(AppRadius.pill),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.22), width: 1),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '$count',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 13,
-                    color: AppColors.brandIndigo,
-                  ),
-                ),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(6, 6, 14, 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.22), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              '$count',
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 13,
+                color: AppColors.brandIndigo,
               ),
-              const SizedBox(width: AppSpacing.md),
-              Flexible(
-                child: Text(
-                  l.claimsInProgress(count),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.chevron_right, color: Colors.white70, size: 18),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(width: 10),
+          Flexible(
+            child: Text(
+              l.claimsInProgress(count),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Icon(Icons.chevron_right, color: Colors.white70, size: 18),
+        ],
       ),
     );
   }
 }
 
-class _GlassSharesCard extends StatelessWidget {
-  const _GlassSharesCard({
+// ─── Inner shares card (solid white, matching the reference) ─────────────────
+
+class _SharesCard extends StatelessWidget {
+  const _SharesCard({
     required this.total,
     required this.asOfDate,
     required this.monthlyChange,
@@ -246,110 +239,157 @@ class _GlassSharesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUp = monthlyChange >= 0;
-    final changeStr =
-        '${isUp ? '+' : '-'}$currency ${monthlyChange.abs().toStringAsFixed(2)}';
+    final changeStr = '${isUp ? '+' : '-'}$currency ${monthlyChange.abs().toStringAsFixed(2)}';
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadius.xxl),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.16),
-            borderRadius: BorderRadius.circular(AppRadius.xxl),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.28),
-              width: 1.5,
-            ),
-          ),
-          child: Column(
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.xxl),
+        boxShadow: AppShadows.elevated,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top row: label + decorative illustration
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          label,
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.7),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 13,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          total,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.8,
-                            height: 1.1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: isUp
-                          ? Colors.white.withValues(alpha: 0.18)
-                          : Colors.orange.withValues(alpha: 0.22),
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.20),
-                        width: 1,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isUp ? Icons.trending_up : Icons.trending_down,
-                          size: 13,
-                          color: isUp ? const Color(0xFF6EE7B7) : const Color(0xFFFBBF24),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          changeStr,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: isUp ? const Color(0xFF6EE7B7) : const Color(0xFFFBBF24),
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 6),
+                    Text(
+                      total,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.8,
+                        height: 1.1,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacing.lg),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'as of $asOfDate',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.55),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                  DarkPillButton(label: cta, onPressed: onCta, compact: true),
-                ],
+              const SizedBox(width: AppSpacing.md),
+              // Decorative abstract illustration — matches the paper/doc in reference
+              CustomPaint(
+                size: const Size(52, 48),
+                painter: _CardIllustrationPainter(),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: AppSpacing.md),
+          // Divider
+          Container(height: 1, color: AppColors.divider),
+          const SizedBox(height: AppSpacing.md),
+          // Bottom row: change indicator + CTA
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                decoration: BoxDecoration(
+                  color: isUp ? AppColors.tagGreenBg : AppColors.tagAmberBg,
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isUp ? Icons.trending_up : Icons.trending_down,
+                      size: 13,
+                      color: isUp ? AppColors.tagGreenText : AppColors.tagAmberText,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      changeStr,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: isUp ? AppColors.tagGreenText : AppColors.tagAmberText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              DarkPillButton(label: cta, onPressed: onCta, compact: true, onBrand: true),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
+
+// ─── Decorative card illustration (like the paper doc in the reference) ───────
+
+class _CardIllustrationPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..style = PaintingStyle.fill;
+
+    // Background rounded rect (like a folded document)
+    paint.color = const Color(0xFFE8EAF6);
+    final rrect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(8, 0, size.width - 8, size.height - 6),
+      const Radius.circular(8),
+    );
+    canvas.drawRRect(rrect, paint);
+
+    // Folded corner effect
+    paint.color = const Color(0xFFD0D3EF);
+    final corner = Path()
+      ..moveTo(size.width - 8, 0)
+      ..lineTo(size.width, 10)
+      ..lineTo(size.width - 8, 10)
+      ..close();
+    canvas.drawPath(corner, paint);
+
+    // Lines inside the doc
+    paint.color = const Color(0xFFC5C8E8);
+    final linePaint = Paint()
+      ..color = const Color(0xFFC5C8E8)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+
+    for (var i = 0; i < 3; i++) {
+      final y = 18.0 + i * 8;
+      final endX = i == 2 ? size.width - 22 : size.width - 14;
+      canvas.drawLine(Offset(16, y), Offset(endX, y), linePaint);
+    }
+
+    // Small chart bars at bottom
+    paint.color = AppColors.brandViolet.withValues(alpha: 0.35);
+    final barWidths = [6.0, 10.0, 8.0, 12.0];
+    var bx = 16.0;
+    for (final w in barWidths) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(bx, size.height - 18, w, 8),
+          const Radius.circular(2),
+        ),
+        paint,
+      );
+      bx += w + 3;
+    }
+  }
+
+  @override
+  bool shouldRepaint(_CardIllustrationPainter old) => false;
+}
+
+// ─── Glow blob ───────────────────────────────────────────────────────────────
 
 class _GlowBlob extends StatelessWidget {
   const _GlowBlob({required this.size, required this.color});
@@ -373,14 +413,13 @@ class _GlowBlob extends StatelessWidget {
   }
 }
 
-class _DotGridPainter extends StatelessWidget {
+// ─── Dot texture overlay ─────────────────────────────────────────────────────
+
+class _DotTexture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: CustomPaint(
-        painter: _DotPattern(),
-        size: Size.infinite,
-      ),
+      child: CustomPaint(painter: _DotPattern()),
     );
   }
 }
@@ -391,13 +430,10 @@ class _DotPattern extends CustomPainter {
     final paint = Paint()
       ..color = Colors.white.withValues(alpha: 0.05)
       ..style = PaintingStyle.fill;
-
     const spacing = 22.0;
-    const radius = 1.2;
-
     for (double x = 0; x < size.width; x += spacing) {
       for (double y = 0; y < size.height; y += spacing) {
-        canvas.drawCircle(Offset(x, y), radius, paint);
+        canvas.drawCircle(Offset(x, y), 1.2, paint);
       }
     }
   }
