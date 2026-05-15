@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,17 +29,8 @@ class HomeTab extends ConsumerWidget {
     final l = AppL10n.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        // Subtle gradient: barely violet-tinted at top, neutral below
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment(0, 0.6),
-            colors: [Color(0xFFEEEFF8), AppColors.background],
-          ),
-        ),
-        child: RefreshIndicator(
+      backgroundColor: AppColors.background,
+      body: RefreshIndicator(
           color: AppColors.brandViolet,
           backgroundColor: AppColors.surface,
           onRefresh: () async {
@@ -50,7 +39,7 @@ class HomeTab extends ConsumerWidget {
             ref.invalidate(eventsProvider);
             await Future.delayed(const Duration(milliseconds: 600));
           },
-          child: CustomScrollView(
+        child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(
               parent: BouncingScrollPhysics(),
             ),
@@ -161,7 +150,6 @@ class HomeTab extends ConsumerWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }
@@ -182,28 +170,24 @@ class _TopBar extends ConsumerWidget {
         children: [
           const KoperasiLogo(size: 40, showWordmark: true),
           const Spacer(),
-          // Language toggle — refined frosted pill
+          // Language toggle pill
           Pressable(
             onTap: () => ref.read(localeProvider.notifier).toggle(),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.pill),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface.withValues(alpha: 0.82),
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                    border: Border.all(
-                      color: AppColors.divider.withValues(alpha: 0.7),
-                      width: 0.8,
-                    ),
-                    boxShadow: AppShadows.soft,
-                  ),
-                  child: Row(
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.pill),
+                border: Border.all(
+                  color: AppColors.divider.withValues(alpha: 0.7),
+                  width: 0.8,
+                ),
+                boxShadow: AppShadows.soft,
+              ),
+              child: Row(
                     children: [
                       const Icon(
                         Icons.language,
@@ -224,9 +208,7 @@ class _TopBar extends ConsumerWidget {
                     ],
                   ),
                 ),
-              ),
             ),
-          ),
           const SizedBox(width: AppSpacing.sm),
           SoftIconButton(
             icon: Icons.notifications_none_rounded,

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -69,88 +67,95 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       ),
       bottomNavigationBar: SafeArea(
         top: false,
-        child: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.88),
-                border: Border(
-                  top: BorderSide(
-                    color: AppColors.divider.withValues(alpha: 0.5),
-                    width: 0.5,
-                  ),
-                ),
-              ),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.sm,
-                AppSpacing.sm,
-                AppSpacing.sm,
-                AppSpacing.xs,
-              ),
-              child: Row(
-                children: List.generate(tabs.length, (i) {
-                  final selected = i == _index;
-                  final tab = tabs[i];
-                  return Expanded(
-                    child: Pressable(
-                      onTap: () => setState(() => _index = i),
-                      pressedScale: 0.90,
-                      child: AnimatedContainer(
-                        duration: AppMotion.base,
-                        curve: AppMotion.emphasized,
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.sm,
-                          horizontal: AppSpacing.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? AppColors.brandViolet.withValues(alpha: 0.10)
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(AppRadius.lg),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AnimatedSwitcher(
-                              duration: AppMotion.fast,
-                              transitionBuilder: (child, anim) => ScaleTransition(
-                                scale: Tween<double>(begin: 0.75, end: 1.0).animate(
-                                  CurvedAnimation(parent: anim, curve: AppMotion.spring),
-                                ),
-                                child: child,
-                              ),
-                              child: Icon(
-                                selected ? tab.icon : tab.iconOutline,
-                                key: ValueKey(selected),
-                                size: 24,
-                                color: selected
-                                    ? AppColors.brandViolet
-                                    : AppColors.textSecondary,
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            AnimatedDefaultTextStyle(
-                              duration: AppMotion.fast,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                                color: selected
-                                    ? AppColors.brandViolet
-                                    : AppColors.textSecondary,
-                                fontFamily: 'PlusJakartaSans',
-                              ),
-                              child: Text(tab.label),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            border: Border(
+              top: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+                width: 0.5,
               ),
             ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0F000000),
+                blurRadius: 24,
+                offset: Offset(0, -8),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.sm,
+            AppSpacing.sm,
+            AppSpacing.sm,
+            AppSpacing.xs,
+          ),
+          child: Row(
+            children: List.generate(tabs.length, (i) {
+              final selected = i == _index;
+              final tab = tabs[i];
+              return Expanded(
+                child: Pressable(
+                  onTap: () => setState(() => _index = i),
+                  pressedScale: 0.90,
+                  child: AnimatedContainer(
+                    duration: AppMotion.base,
+                    curve: AppMotion.emphasized,
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.sm,
+                      horizontal: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? AppColors.brandViolet.withValues(alpha: 0.10)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedSwitcher(
+                          duration: AppMotion.fast,
+                          transitionBuilder: (child, anim) => ScaleTransition(
+                            scale: Tween<double>(begin: 0.75, end: 1.0).animate(
+                              CurvedAnimation(
+                                parent: anim,
+                                curve: AppMotion.spring,
+                              ),
+                            ),
+                            child: child,
+                          ),
+                          child: Icon(
+                            selected ? tab.icon : tab.iconOutline,
+                            key: ValueKey(selected),
+                            size: 24,
+                            color: selected
+                                ? AppColors.brandViolet
+                                : AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        AnimatedDefaultTextStyle(
+                          duration: AppMotion.fast,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight:
+                                selected ? FontWeight.w700 : FontWeight.w500,
+                            color: selected
+                                ? AppColors.brandViolet
+                                : AppColors.textSecondary,
+                            fontFamily: 'PlusJakartaSans',
+                          ),
+                          child: Text(tab.label),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
           ),
         ),
       ),
