@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -36,9 +37,14 @@ class HomeTab extends ConsumerWidget {
     final eventsAsync = ref.watch(eventsProvider);
     final l = AppL10n.of(context);
 
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
       backgroundColor: AppColors.background,
-      body: RefreshIndicator(
+      body: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: RefreshIndicator(
         color: AppColors.brandViolet,
         backgroundColor: AppColors.surface,
         onRefresh: () async {
@@ -151,6 +157,8 @@ class HomeTab extends ConsumerWidget {
               ),
             ),
           ],
+        ),
+      ),
         ),
       ),
     );

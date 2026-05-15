@@ -61,6 +61,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     ];
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        toolbarHeight: 0,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: IndexedStack(
         index: _index,
         children: tabs.map((t) => t.view).toList(),

@@ -52,29 +52,32 @@ class HeroCard extends StatelessWidget {
         child: Stack(
           children: [
 
-            // Notification bell — top-right, inside SafeArea
-            Positioned(
-              top: 0,
-              right: 8,
-              child: SafeArea(
-                bottom: false,
-                child: SoftIconButton(
-                  icon: Icons.notifications_none_rounded,
-                  onPressed: () {},
-                ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
-              ),
+            // Notification bell — top-right, clears status bar via viewPadding
+            Builder(
+              builder: (context) {
+                final top = MediaQuery.of(context).viewPadding.top;
+                return Positioned(
+                  top: top + 4,
+                  right: 8,
+                  child: SoftIconButton(
+                    icon: Icons.notifications_none_rounded,
+                    onPressed: () {},
+                  ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+                );
+              },
             ),
 
-            // Main content — below status bar
-            SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.xl,
-                  AppSpacing.xxxl,
-                  AppSpacing.xl,
-                  AppSpacing.xl,
-                ),
+            // Main content — uses viewPadding so background fills behind status bar
+            Builder(
+              builder: (context) {
+                final topInset = MediaQuery.of(context).viewPadding.top;
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    topInset + AppSpacing.xxxl,
+                    AppSpacing.xl,
+                    AppSpacing.xl,
+                  ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -156,7 +159,8 @@ class HeroCard extends StatelessWidget {
                         ),
                   ],
                 ),
-              ),
+              );
+              },
             ),
           ],
         ),
