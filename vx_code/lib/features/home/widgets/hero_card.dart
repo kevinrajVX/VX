@@ -43,16 +43,13 @@ class HeroCard extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           color: Color(0xFF1A4FBF),
+          image: DecorationImage(
+            image: AssetImage('assets/images/hero_bg.jpg'),
+            fit: BoxFit.cover,
+          ),
         ),
         child: Stack(
           children: [
-            // Background image — the exact gradient the user sent
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/hero_bg.jpg',
-                fit: BoxFit.cover,
-              ),
-            ),
 
             // Notification bell — top-right, inside SafeArea
             Positioned(
