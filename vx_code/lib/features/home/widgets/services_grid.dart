@@ -14,12 +14,12 @@ class ServicesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
     final services = <_Service>[
-      _Service('pay-dues', l.servicePayDues, Icons.payments_rounded, 0),
-      _Service('statements', l.serviceStatements, Icons.description_rounded, 1),
-      _Service('top-up', l.serviceTopUpShares, Icons.add_circle_rounded, 2),
-      _Service('marketplace', l.serviceMarketplace, Icons.storefront_rounded, 3),
-      _Service('enquiry', l.serviceEnquiry, Icons.support_agent_rounded, 4),
-      _Service('events', l.serviceEvents, Icons.event_rounded, 5),
+      _Service('pay-dues', l.servicePayDues, Icons.payments_outlined),
+      _Service('statements', l.serviceStatements, Icons.download_outlined),
+      _Service('top-up', l.serviceTopUpShares, Icons.add_circle_outline_rounded),
+      _Service('marketplace', l.serviceMarketplace, Icons.storefront_outlined),
+      _Service('enquiry', l.serviceEnquiry, Icons.support_agent_outlined),
+      _Service('events', l.serviceEvents, Icons.event_outlined),
     ];
 
     return GridView.builder(
@@ -31,15 +31,14 @@ class ServicesGrid extends StatelessWidget {
         crossAxisCount: 3,
         mainAxisSpacing: AppSpacing.sm,
         crossAxisSpacing: AppSpacing.sm,
-        childAspectRatio: 2.1,
+        childAspectRatio: 1.9,
       ),
       itemBuilder: (context, i) {
         final s = services[i];
-        final gradient = AppColors.serviceGradients[s.colorIndex];
 
         return Pressable(
           onTap: () => onServiceTap(s.id),
-          pressedScale: 0.93,
+          pressedScale: 0.94,
           child: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
@@ -47,20 +46,25 @@ class ServicesGrid extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppRadius.md),
+              borderRadius: BorderRadius.circular(AppRadius.lg),
               boxShadow: AppShadows.card,
             ),
             child: Row(
               children: [
+                // Monochrome icon container — matches reference
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 34,
+                  height: 34,
                   decoration: BoxDecoration(
-                    gradient: gradient,
-                    borderRadius: BorderRadius.circular(9),
+                    color: AppColors.surfaceMuted,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   alignment: Alignment.center,
-                  child: Icon(s.icon, size: 16, color: Colors.white),
+                  child: Icon(
+                    s.icon,
+                    size: 18,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
@@ -70,7 +74,7 @@ class ServicesGrid extends StatelessWidget {
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
-                      height: 1.2,
+                      height: 1.25,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -81,12 +85,13 @@ class ServicesGrid extends StatelessWidget {
           ),
         )
             .animate()
-            .fadeIn(delay: (60 * i).ms, duration: 280.ms)
-            .scale(
-              begin: const Offset(0.85, 0.85),
-              delay: (60 * i).ms,
-              duration: 400.ms,
-              curve: AppMotion.spring,
+            .fadeIn(delay: (55 * i).ms, duration: 260.ms)
+            .slideY(
+              begin: 0.12,
+              end: 0,
+              delay: (55 * i).ms,
+              duration: 320.ms,
+              curve: AppMotion.emphasized,
             );
       },
     );
@@ -94,9 +99,8 @@ class ServicesGrid extends StatelessWidget {
 }
 
 class _Service {
-  _Service(this.id, this.label, this.icon, this.colorIndex);
+  _Service(this.id, this.label, this.icon);
   final String id;
   final String label;
   final IconData icon;
-  final int colorIndex;
 }

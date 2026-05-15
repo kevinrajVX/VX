@@ -8,7 +8,11 @@ import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/dark_pill_button.dart';
 
 class HeroCard extends StatelessWidget {
-  const HeroCard({super.key, required this.member, required this.onViewStatement});
+  const HeroCard({
+    super.key,
+    required this.member,
+    required this.onViewStatement,
+  });
 
   final Member member;
   final VoidCallback onViewStatement;
@@ -32,72 +36,80 @@ class HeroCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.card),
         child: Stack(
           children: [
-            // Glow blob — top right
+            // Vivid blue glow — top-right (the electric blue in image 2)
             const Positioned(
-              right: -80,
-              top: -80,
-              child: _GlowBlob(size: 300, color: Color(0x606366F1)),
+              right: -60,
+              top: -60,
+              child: _GlowBlob(size: 300, color: Color(0x881A56DB)),
             ),
-            // Glow blob — bottom left
+            // Soft white glow — center-top (creates the lens/highlight effect)
             const Positioned(
-              left: -60,
-              bottom: -80,
-              child: _GlowBlob(size: 240, color: Color(0x504F86DC)),
+              right: 40,
+              top: 20,
+              child: _GlowBlob(size: 140, color: Color(0x55FFFFFF)),
             ),
-            // Dot texture
-            Positioned.fill(child: _DotTexture()),
+            // Silver/blue glow — bottom-left
+            const Positioned(
+              left: -40,
+              bottom: -40,
+              child: _GlowBlob(size: 220, color: Color(0x40A0B8D8)),
+            ),
             // Content
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xxl,
+                AppSpacing.xl,
                 AppSpacing.xxxl,
-                AppSpacing.xxl,
-                AppSpacing.xxl,
+                AppSpacing.xl,
+                AppSpacing.xl,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Top row: welcome + tier
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          l.welcomeBack,
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.75),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ).animate().fadeIn(delay: 60.ms, duration: 300.ms),
-                      ),
-                      _TierBadge(tier: member.tier)
-                          .animate()
-                          .fadeIn(delay: 100.ms)
-                          .slideX(begin: 0.2, end: 0, delay: 100.ms, duration: 320.ms, curve: AppMotion.emphasized),
-                    ],
-                  ),
+                  // Welcome text — centered
+                  Text(
+                    l.welcomeBack,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.2,
+                    ),
+                  ).animate().fadeIn(delay: 60.ms, duration: 320.ms),
                   const SizedBox(height: 6),
-                  // Member name
+                  // Name — centered, large
                   Text(
                     member.name,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 30,
+                      fontSize: 34,
                       fontWeight: FontWeight.w800,
-                      letterSpacing: -0.8,
+                      letterSpacing: -1.0,
                       height: 1.1,
                     ),
                   )
                       .animate()
-                      .fadeIn(delay: 120.ms, duration: 360.ms)
-                      .slideY(begin: 0.2, end: 0, delay: 120.ms, duration: 380.ms, curve: AppMotion.springOut),
-                  const SizedBox(height: AppSpacing.xl),
-                  // Claims pill
+                      .fadeIn(delay: 100.ms, duration: 360.ms)
+                      .slideY(
+                        begin: 0.15,
+                        end: 0,
+                        delay: 100.ms,
+                        duration: 400.ms,
+                        curve: AppMotion.springOut,
+                      ),
+                  const SizedBox(height: AppSpacing.xxl),
+                  // Claims pill — white, full width
                   _ClaimsPill(count: member.enquiriesInProgress)
                       .animate()
-                      .fadeIn(delay: 200.ms, duration: 300.ms)
-                      .slideX(begin: -0.1, end: 0, delay: 200.ms, duration: 340.ms, curve: AppMotion.springOut),
-                  const SizedBox(height: AppSpacing.lg),
+                      .fadeIn(delay: 180.ms, duration: 300.ms)
+                      .slideY(
+                        begin: 0.1,
+                        end: 0,
+                        delay: 180.ms,
+                        duration: 340.ms,
+                        curve: AppMotion.emphasized,
+                      ),
+                  const SizedBox(height: AppSpacing.md),
                   // Inner shares card
                   _SharesCard(
                     total: currency.format(member.sharesTotal),
@@ -109,9 +121,14 @@ class HeroCard extends StatelessWidget {
                     onCta: onViewStatement,
                   )
                       .animate()
-                      .fadeIn(delay: 300.ms, duration: 420.ms)
-                      .slideY(begin: 0.18, end: 0, delay: 300.ms, duration: 440.ms, curve: AppMotion.springOut)
-                      .scale(begin: const Offset(0.96, 0.96), delay: 300.ms, duration: 440.ms, curve: AppMotion.springOut),
+                      .fadeIn(delay: 260.ms, duration: 400.ms)
+                      .slideY(
+                        begin: 0.15,
+                        end: 0,
+                        delay: 260.ms,
+                        duration: 440.ms,
+                        curve: AppMotion.springOut,
+                      ),
                 ],
               ),
             ),
@@ -120,43 +137,12 @@ class HeroCard extends StatelessWidget {
       ),
     )
         .animate()
-        .fadeIn(duration: 380.ms)
-        .scale(begin: const Offset(0.94, 0.94), duration: 480.ms, curve: AppMotion.springOut);
-  }
-}
-
-// ─── Tier badge ─────────────────────────────────────────────────────────────
-
-class _TierBadge extends StatelessWidget {
-  const _TierBadge({required this.tier});
-  final String tier;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.28), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.workspace_premium_rounded, size: 12, color: Color(0xFFFFD700)),
-          const SizedBox(width: 5),
-          Text(
-            tier,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ],
-      ),
-    );
+        .fadeIn(duration: 360.ms)
+        .scale(
+          begin: const Offset(0.96, 0.96),
+          duration: 460.ms,
+          curve: AppMotion.springOut,
+        );
   }
 }
 
@@ -170,20 +156,27 @@ class _ClaimsPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
     return Container(
-      padding: const EdgeInsets.fromLTRB(6, 6, 14, 6),
+      padding: const EdgeInsets.fromLTRB(6, 6, 16, 6),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
+        color: Colors.white.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.22), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+            spreadRadius: -4,
+          ),
+        ],
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
+          // Colored badge
           Container(
-            width: 30,
-            height: 30,
+            width: 36,
+            height: 36,
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: AppColors.brandViolet,
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
@@ -191,31 +184,34 @@ class _ClaimsPill extends StatelessWidget {
               '$count',
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
-                fontSize: 13,
-                color: AppColors.brandIndigo,
+                fontSize: 14,
+                color: Colors.white,
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          Flexible(
+          const SizedBox(width: 12),
+          Expanded(
             child: Text(
               l.claimsInProgress(count),
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.w600,
-                fontSize: 13,
+                fontSize: 14,
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          const Icon(Icons.chevron_right, color: Colors.white70, size: 18),
+          const Icon(
+            Icons.chevron_right_rounded,
+            size: 20,
+            color: AppColors.textSecondary,
+          ),
         ],
       ),
     );
   }
 }
 
-// ─── Inner shares card (solid white, matching the reference) ─────────────────
+// ─── Inner shares card ────────────────────────────────────────────────────────
 
 class _SharesCard extends StatelessWidget {
   const _SharesCard({
@@ -239,10 +235,10 @@ class _SharesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUp = monthlyChange >= 0;
-    final changeStr = '${isUp ? '+' : '-'}$currency ${monthlyChange.abs().toStringAsFixed(2)}';
+    final changeStr =
+        '${isUp ? '+' : '-'}$currency ${monthlyChange.abs().toStringAsFixed(2)}';
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.xxl),
@@ -251,80 +247,130 @@ class _SharesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top row: label + decorative illustration
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
+          // Upper section: title + illustration
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.xl,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                          letterSpacing: -0.3,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      total,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.8,
-                        height: 1.1,
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.access_time_rounded,
+                            size: 13,
+                            color: AppColors.textSecondary,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'as of $asOfDate',
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              // Decorative abstract illustration — matches the paper/doc in reference
-              CustomPaint(
-                size: const Size(52, 48),
-                painter: _CardIllustrationPainter(),
-              ),
-            ],
+                // Large document illustration — matches the reference
+                SizedBox(
+                  width: 80,
+                  height: 72,
+                  child: CustomPaint(painter: _DocIllustration()),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: AppSpacing.md),
           // Divider
-          Container(height: 1, color: AppColors.divider),
-          const SizedBox(height: AppSpacing.md),
-          // Bottom row: change indicator + CTA
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                decoration: BoxDecoration(
-                  color: isUp ? AppColors.tagGreenBg : AppColors.tagAmberBg,
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      isUp ? Icons.trending_up : Icons.trending_down,
-                      size: 13,
-                      color: isUp ? AppColors.tagGreenText : AppColors.tagAmberText,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      changeStr,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: isUp ? AppColors.tagGreenText : AppColors.tagAmberText,
+          const Divider(height: 1, thickness: 1, color: AppColors.divider),
+          // Lower section: amount + CTA
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        total,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.5,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 3),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isUp
+                              ? AppColors.tagGreenBg
+                              : AppColors.tagAmberBg,
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isUp
+                                  ? Icons.trending_up
+                                  : Icons.trending_down,
+                              size: 11,
+                              color: isUp
+                                  ? AppColors.tagGreenText
+                                  : AppColors.tagAmberText,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              changeStr,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: isUp
+                                    ? AppColors.tagGreenText
+                                    : AppColors.tagAmberText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const Spacer(),
-              DarkPillButton(label: cta, onPressed: onCta, compact: true, onBrand: true),
-            ],
+                DarkPillButton(label: cta, onPressed: onCta, compact: true),
+              ],
+            ),
           ),
         ],
       ),
@@ -332,64 +378,75 @@ class _SharesCard extends StatelessWidget {
   }
 }
 
-// ─── Decorative card illustration (like the paper doc in the reference) ───────
+// ─── Document illustration (CustomPainter) ────────────────────────────────────
 
-class _CardIllustrationPainter extends CustomPainter {
+class _DocIllustration extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..style = PaintingStyle.fill;
+    final bgPaint = Paint()
+      ..color = const Color(0xFFEEF0F7)
+      ..style = PaintingStyle.fill;
 
-    // Background rounded rect (like a folded document)
-    paint.color = const Color(0xFFE8EAF6);
-    final rrect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(8, 0, size.width - 8, size.height - 6),
-      const Radius.circular(8),
+    final shadowPaint = Paint()
+      ..color = const Color(0xFFDDE0ED)
+      ..style = PaintingStyle.fill;
+
+    // Back page (shadow page)
+    final backPage = RRect.fromRectAndRadius(
+      Rect.fromLTWH(10, 6, size.width - 18, size.height - 10),
+      const Radius.circular(10),
     );
-    canvas.drawRRect(rrect, paint);
+    canvas.drawRRect(backPage, shadowPaint);
 
-    // Folded corner effect
-    paint.color = const Color(0xFFD0D3EF);
-    final corner = Path()
-      ..moveTo(size.width - 8, 0)
-      ..lineTo(size.width, 10)
-      ..lineTo(size.width - 8, 10)
-      ..close();
-    canvas.drawPath(corner, paint);
+    // Main page
+    final mainPage = RRect.fromRectAndRadius(
+      Rect.fromLTWH(2, 0, size.width - 12, size.height - 8),
+      const Radius.circular(10),
+    );
+    canvas.drawRRect(mainPage, bgPaint);
 
-    // Lines inside the doc
-    paint.color = const Color(0xFFC5C8E8);
+    // Lines on the page
     final linePaint = Paint()
-      ..color = const Color(0xFFC5C8E8)
-      ..strokeWidth = 2
+      ..color = const Color(0xFFCDD1E4)
+      ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
 
-    for (var i = 0; i < 3; i++) {
-      final y = 18.0 + i * 8;
-      final endX = i == 2 ? size.width - 22 : size.width - 14;
-      canvas.drawLine(Offset(16, y), Offset(endX, y), linePaint);
+    final lineStarts = [14.0, 22.0, 30.0];
+    final lineEnds = [size.width - 20, size.width - 26, size.width - 32];
+    for (var i = 0; i < lineStarts.length; i++) {
+      canvas.drawLine(
+        Offset(8, lineStarts[i]),
+        Offset(lineEnds[i], lineStarts[i]),
+        linePaint,
+      );
     }
 
-    // Small chart bars at bottom
-    paint.color = AppColors.brandViolet.withValues(alpha: 0.35);
-    final barWidths = [6.0, 10.0, 8.0, 12.0];
-    var bx = 16.0;
-    for (final w in barWidths) {
+    // Small bar chart at bottom
+    final barPaint = Paint()
+      ..color = AppColors.brandViolet.withValues(alpha: 0.30)
+      ..style = PaintingStyle.fill;
+
+    final barHeights = [10.0, 16.0, 12.0, 18.0];
+    var bx = 8.0;
+    const barWidth = 7.0;
+    final baseY = size.height - 10.0;
+    for (final h in barHeights) {
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromLTWH(bx, size.height - 18, w, 8),
+          Rect.fromLTWH(bx, baseY - h, barWidth, h),
           const Radius.circular(2),
         ),
-        paint,
+        barPaint,
       );
-      bx += w + 3;
+      bx += barWidth + 3;
     }
   }
 
   @override
-  bool shouldRepaint(_CardIllustrationPainter old) => false;
+  bool shouldRepaint(_DocIllustration old) => false;
 }
 
-// ─── Glow blob ───────────────────────────────────────────────────────────────
+// ─── Glow blob ────────────────────────────────────────────────────────────────
 
 class _GlowBlob extends StatelessWidget {
   const _GlowBlob({required this.size, required this.color});
@@ -411,33 +468,4 @@ class _GlowBlob extends StatelessWidget {
       ),
     );
   }
-}
-
-// ─── Dot texture overlay ─────────────────────────────────────────────────────
-
-class _DotTexture extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: CustomPaint(painter: _DotPattern()),
-    );
-  }
-}
-
-class _DotPattern extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.05)
-      ..style = PaintingStyle.fill;
-    const spacing = 22.0;
-    for (double x = 0; x < size.width; x += spacing) {
-      for (double y = 0; y < size.height; y += spacing) {
-        canvas.drawCircle(Offset(x, y), 1.2, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DotPattern old) => false;
 }

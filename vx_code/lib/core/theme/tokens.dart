@@ -14,12 +14,18 @@ class AppColors {
     colors: [brandIndigo, brandViolet],
   );
 
-  // Richer 3-stop gradient for the hero card
+  // Hero card: bright blue top-right → silver → near-white bottom-left
+  // Matches the reference gradient (image 2)
   static const LinearGradient heroGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    stops: [0.0, 0.45, 1.0],
-    colors: [Color(0xFF0F0D2A), Color(0xFF2D2A7A), Color(0xFF4F46E5)],
+    begin: Alignment.topRight,
+    end: Alignment.bottomLeft,
+    stops: [0.0, 0.38, 0.70, 1.0],
+    colors: [
+      Color(0xFF1A4FBF),
+      Color(0xFF4A8FD4),
+      Color(0xFFBFCFE8),
+      Color(0xFFF0F3FA),
+    ],
   );
 
   static const LinearGradient brandGradientSoft = LinearGradient(
