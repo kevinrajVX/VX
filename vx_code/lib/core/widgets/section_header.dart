@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/tokens.dart';
 import 'pressable.dart';
 
+/// A row with a bold section [title] and an optional violet pill action button.
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
     super.key,
@@ -25,9 +26,9 @@ class SectionHeader extends StatelessWidget {
             title,
             style: const TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
-              letterSpacing: -0.4,
+              letterSpacing: -0.3,
             ),
           ),
         ),

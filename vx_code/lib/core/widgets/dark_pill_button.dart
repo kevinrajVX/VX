@@ -21,8 +21,8 @@ class DarkPillButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fg = onBrand ? AppColors.buttonDark : Colors.white;
-    final bg = onBrand ? Colors.white : AppColors.buttonDark;
+    final fg = onBrand ? AppColors.textPrimary : Colors.white;
+    final bg = onBrand ? Colors.white : AppColors.textPrimary;
     return Pressable(
       onTap: onPressed,
       child: Container(
@@ -37,7 +37,7 @@ class DarkPillButton extends StatelessWidget {
               ? AppShadows.card
               : [
                   BoxShadow(
-                    color: AppColors.buttonDark.withValues(alpha: 0.18),
+                    color: AppColors.textPrimary.withValues(alpha: 0.18),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                     spreadRadius: -4,

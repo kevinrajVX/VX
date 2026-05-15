@@ -241,7 +241,7 @@ class _SharesCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.xxl),
+        borderRadius: BorderRadius.circular(AppRadius.card),
         boxShadow: AppShadows.elevated,
       ),
       child: Column(

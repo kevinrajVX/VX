@@ -3,26 +3,35 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'tokens.dart';
 
-class AppTheme {
-  AppTheme._();
-
+/// Provides the single light [ThemeData] for the app.
+///
+/// Typography: Plus Jakarta Sans for body text, Space Grotesk for headings.
+/// Color scheme seeded from [AppColors.brandViolet] via Material 3.
+abstract final class AppTheme {
   static ThemeData light() {
     final base = ThemeData.light(useMaterial3: true);
 
-    final textTheme = GoogleFonts.plusJakartaSansTextTheme(base.textTheme).apply(
+    // Body / label text — Plus Jakarta Sans
+    final bodyTheme = GoogleFonts.plusJakartaSansTextTheme(base.textTheme).apply(
       bodyColor: AppColors.textPrimary,
       displayColor: AppColors.textPrimary,
     );
 
+    // Heading text — Space Grotesk
     final headingTheme = GoogleFonts.spaceGroteskTextTheme(base.textTheme);
 
-    final mergedText = textTheme.copyWith(
+    final textTheme = bodyTheme.copyWith(
       displayLarge: headingTheme.displayLarge?.copyWith(
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
-        letterSpacing: -1,
+        letterSpacing: -1.2,
       ),
       displayMedium: headingTheme.displayMedium?.copyWith(
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.8,
+      ),
+      displaySmall: headingTheme.displaySmall?.copyWith(
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
         letterSpacing: -0.5,
@@ -41,24 +50,32 @@ class AppTheme {
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
       ),
-      titleLarge: textTheme.titleLarge?.copyWith(
+      titleLarge: bodyTheme.titleLarge?.copyWith(
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.2,
+      ),
+      titleMedium: bodyTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+      ),
+      titleSmall: bodyTheme.titleSmall?.copyWith(
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+      ),
+      bodyLarge: bodyTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
+      bodyMedium: bodyTheme.bodyMedium?.copyWith(color: AppColors.textPrimary),
+      bodySmall: bodyTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+      labelLarge: bodyTheme.labelLarge?.copyWith(
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
       ),
-      titleMedium: textTheme.titleMedium?.copyWith(
+      labelMedium: bodyTheme.labelMedium?.copyWith(
         fontWeight: FontWeight.w600,
-        color: AppColors.textPrimary,
+        color: AppColors.textSecondary,
       ),
-      titleSmall: textTheme.titleSmall?.copyWith(
-        fontWeight: FontWeight.w600,
-        color: AppColors.textPrimary,
-      ),
-      bodyLarge: textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
-      bodyMedium: textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary),
-      bodySmall: textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
-      labelLarge: textTheme.labelLarge?.copyWith(
-        fontWeight: FontWeight.w600,
-        color: AppColors.textPrimary,
+      labelSmall: bodyTheme.labelSmall?.copyWith(
+        color: AppColors.textSecondary,
       ),
     );
 
@@ -68,22 +85,28 @@ class AppTheme {
     ).copyWith(
       primary: AppColors.brandViolet,
       onPrimary: Colors.white,
+      secondary: AppColors.brandBlue,
+      onSecondary: Colors.white,
       surface: AppColors.surface,
       onSurface: AppColors.textPrimary,
+      surfaceContainerHighest: AppColors.surfaceMuted,
     );
 
     return base.copyWith(
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.background,
-      textTheme: mergedText,
+      textTheme: textTheme,
+
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
-        titleTextStyle: mergedText.titleLarge,
+        titleTextStyle: textTheme.titleLarge,
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        surfaceTintColor: Colors.transparent,
       ),
+
       cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 0,
@@ -92,34 +115,29 @@ class AppTheme {
         ),
         margin: EdgeInsets.zero,
       ),
+
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppColors.buttonDark,
+          backgroundColor: AppColors.textPrimary,
           foregroundColor: Colors.white,
           shape: const StadiumBorder(),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.xxl,
             vertical: AppSpacing.lg,
           ),
-          textStyle: mergedText.labelLarge?.copyWith(
+          textStyle: textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: Colors.white,
           ),
         ),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.brandViolet,
-        unselectedItemColor: AppColors.textSecondary,
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
-        elevation: 0,
-      ),
+
       dividerTheme: const DividerThemeData(
         color: AppColors.divider,
         thickness: 1,
         space: 1,
       ),
+
       iconTheme: const IconThemeData(color: AppColors.textPrimary),
       splashFactory: InkSparkle.splashFactory,
     );
