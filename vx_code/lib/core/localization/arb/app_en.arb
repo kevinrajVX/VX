@@ -41,5 +41,16 @@
   "bookmark": "Bookmark",
   "languageToggle": "BM",
   "memberId": "Member ID",
-  "yourMemberCard": "Your Member Card"
+  "yourMemberCard": "Your Member Card",
+  "signIn": "Sign In",
+  "password": "Password",
+  "enterMemberId": "Enter your Member ID",
+  "enterPassword": "Enter your password",
+  "invalidCredentials": "Invalid credentials. Please try again.",
+  "signOut": "Sign Out",
+  "loggedInAs": "Logged in as {username}",
+  "@loggedInAs": {
+    "placeholders": { "username": { "type": "String" } }
+  },
+  "switchAccount": "Switch Account"
 }

@@ -7,6 +7,7 @@ import '../../core/widgets/pressable.dart';
 import '../news/list/news_list_page.dart';
 import 'home_tab.dart';
 import 'placeholder_tab.dart';
+import 'profile_tab.dart';
 
 /// Root shell widget that manages the 5-tab bottom navigation.
 ///
@@ -56,7 +57,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         label: l.tabProfile,
         icon: Icons.person_rounded,
         iconOutline: Icons.person_outline_rounded,
-        view: PlaceholderTab(label: l.tabProfile, icon: Icons.person_outline_rounded),
+        view: const ProfileTab(),
       ),
     ];
 

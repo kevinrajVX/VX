@@ -105,4 +105,28 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get yourMemberCard => 'Your Member Card';
+
+  @override
+  String get signIn => 'Sign In';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get enterMemberId => 'Enter your Member ID';
+
+  @override
+  String get enterPassword => 'Enter your password';
+
+  @override
+  String get invalidCredentials => 'Invalid credentials. Please try again.';
+
+  @override
+  String get signOut => 'Sign Out';
+
+  @override
+  String loggedInAs(String username) => 'Logged in as $username';
+
+  @override
+  String get switchAccount => 'Switch Account';
 }

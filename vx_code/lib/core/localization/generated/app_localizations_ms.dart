@@ -105,4 +105,28 @@ class AppL10nMs extends AppL10n {
 
   @override
   String get yourMemberCard => 'Kad Ahli Anda';
+
+  @override
+  String get signIn => 'Log Masuk';
+
+  @override
+  String get password => 'Kata Laluan';
+
+  @override
+  String get enterMemberId => 'Masukkan ID Ahli anda';
+
+  @override
+  String get enterPassword => 'Masukkan kata laluan anda';
+
+  @override
+  String get invalidCredentials => 'Kelayakan tidak sah. Sila cuba lagi.';
+
+  @override
+  String get signOut => 'Log Keluar';
+
+  @override
+  String loggedInAs(String username) => 'Log masuk sebagai $username';
+
+  @override
+  String get switchAccount => 'Tukar Akaun';
 }
