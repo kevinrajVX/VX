@@ -2,26 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/auth/auth_provider.dart';
 import 'core/localization/generated/app_localizations.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/login_page.dart';
 import 'features/home/home_shell.dart';
 
 void main() {
   runApp(const ProviderScope(child: VXCodeApp()));
 }
 
-/// Root application widget.
-///
-/// Watches [localeProvider] to switch between English and Malay at runtime.
-/// Uses [AppTheme.light()] for Material 3 theming with Plus Jakarta Sans +
-/// Space Grotesk typography.
 class VXCodeApp extends ConsumerWidget {
   const VXCodeApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
+    final auth = ref.watch(authProvider);
+
     return MaterialApp(
       title: 'Koperasi VX',
       debugShowCheckedModeBanner: false,
@@ -34,7 +33,7 @@ class VXCodeApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: const HomeShell(),
+      home: auth.isAuthenticated ? const HomeShell() : const LoginPage(),
     );
   }
 }

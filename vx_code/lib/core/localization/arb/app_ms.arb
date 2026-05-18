@@ -27,5 +27,13 @@
   "bookmark": "Simpan",
   "languageToggle": "EN",
   "memberId": "ID Ahli",
-  "yourMemberCard": "Kad Ahli Anda"
+  "yourMemberCard": "Kad Ahli Anda",
+  "signIn": "Log Masuk",
+  "password": "Kata Laluan",
+  "enterMemberId": "Masukkan ID Ahli anda",
+  "enterPassword": "Masukkan kata laluan anda",
+  "invalidCredentials": "Kelayakan tidak sah. Sila cuba lagi.",
+  "signOut": "Log Keluar",
+  "loggedInAs": "Log masuk sebagai {username}",
+  "switchAccount": "Tukar Akaun"
 }

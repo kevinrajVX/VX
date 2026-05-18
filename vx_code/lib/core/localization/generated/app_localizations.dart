@@ -264,6 +264,54 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Your Member Card'**
   String get yourMemberCard;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signIn;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @enterMemberId.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your Member ID'**
+  String get enterMemberId;
+
+  /// No description provided for @enterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get enterPassword;
+
+  /// No description provided for @invalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid credentials. Please try again.'**
+  String get invalidCredentials;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get signOut;
+
+  /// No description provided for @loggedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged in as {username}'**
+  String loggedInAs(String username);
+
+  /// No description provided for @switchAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Account'**
+  String get switchAccount;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
